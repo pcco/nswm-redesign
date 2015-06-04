@@ -375,6 +375,138 @@ add_action('wp_enqueue_scripts', 'zerif_scripts');
 //   );
 // }
 
+
+function register_my_custom_field() {
+  $args = array(
+    'name' => 'My Custom Field', 
+    'edit_options' => array( 
+     
+      array(
+        'type' => 'text',
+        'name' => 'datasource_formid',
+        'label' => 'DataSource FormID', 
+        'class' => 'widefat',
+      ),
+      array(
+        'type' => 'text',
+        'name' => 'datasource_fieldid',
+        'label' => 'DataSource FieldID', 
+        'class' => 'widefat',
+      ),
+      
+    ),
+    'display_function' => 'my_new_field_display',
+    'edit_function' => 'my_new_field_edit',
+    'sidebar' => 'template_fields',
+  );
+  
+  if( function_exists( 'ninja_forms_register_field' ) ) {
+    ninja_forms_register_field('my_field', $args);
+  }
+}
+
+add_action( 'init', 'register_my_custom_field' );
+/*
+ * This function outputs HTML for the backend editor.
+ * The naming convention is: ninja_forms_field_4[custom_value].
+ * It will be available as $data[custom_value].
+ *  
+ * $field_id is the id of the field currently being edited.
+ * $data is an array of the field data, including any custom variables.
+ *
+*/
+function my_new_field_edit( $field_id, $data ){
+
+}
+
+/*
+ * This function only has to output the specific field element. The wrap is output automatically.
+ *
+ * $field_id is the id of the field currently being displayed.
+ * $data is an array the possibly modified field data for the current field.
+ *
+*/
+function my_new_field_display( $field_id, $data, $form_id  ){
+
+    if($data['req']==1)$required='required';else $required='';
+    
+
+    $provider_form_id=$data['datasource_formid'];
+    $provider_field_id=$data['datasource_fieldid'];
+
+ $provider_args = array(
+  'form_id'   => $provider_form_id
+  );
+ $provider_subs = Ninja_Forms()->subs()->get( $provider_args );
+
+$customer_args = array(
+  'form_id'   => $form_id
+  );
+ $customer_subs = Ninja_Forms()->subs()->get( $customer_args );
+
+$results = array();
+
+
+ foreach ( $provider_subs as $sub ) {
+     $provider_field_subs=$sub->get_field( $provider_field_id );
+     foreach ($provider_field_subs as $provider_field_sub_value) {
+        array_push($results,$provider_field_sub_value);
+     }
+ }
+
+ foreach ($customer_subs as $sub) {
+    $customer_field_subs=$sub->get_field( $field_id );
+     foreach ($customer_field_subs as $customer_field_sub_value) {
+     $key = array_search($customer_field_sub_value, $results); 
+     
+     unset($results[$key]);
+    }
+ }
+ $results=array_unique($results);
+ sort($results);
+  ?>
+  <select name="ninja_forms_field_<?php echo $field_id;?>[]" id="ninja_forms_field_<?php echo $field_id;?>" class="ninja-forms-field " rel="<?php echo $field_id;?>" <?php echo $required;?>>
+       
+  <?php
+ if(count($results)>0){
+    ?>
+        <option value="" disabled  selected>Please Select</option>
+    <?php
+ }
+
+//$formData= ninja_forms_get_form_by_field_id( $field_id );
+ 
+ //echo array_shift(array_slice($formData, 0, 1));
+
+
+// This is a basic example of how to interact with the returned objects.
+// See other documentation for all the methods and properties of the submission object.
+ // foreach ( $provider_subs as $sub ) {
+  // $form_id = $sub->form_id;
+  // $user_id = $sub->user_id;
+  // Returns an array of [field_id] => [user_value] pairs
+  //$all_fields = $sub->get_all_fields();
+  // Echoes out the submitted value for a field
+  // $field_sub=$sub->get_field( $ds_field_id );
+  foreach ($results as $result) {
+       ?>
+        <option value="<?php echo $result;?>"><?php echo $result;?></option>
+ 
+        <?php
+  }
+ 
+// }
+ ?>
+  </select>
+  <?php
+
+  
+  
+}
+
+
+
+
 add_action('tgmpa_register', 'zerif_register_required_plugins');
 
 

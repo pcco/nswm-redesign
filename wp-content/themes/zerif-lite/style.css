@@ -475,11 +475,11 @@ thead th{
 	margin: auto;
 	z-index: 1;
 	content: "";
-	width: 75%;
+	width: 100%;
 	height: 2px;
 	background: #e96656;
 	bottom: -9px;
-	left: 12.5%;
+	left: 0%;
 }
 .green-border-bottom:before {
 	position: absolute;
@@ -1761,8 +1761,8 @@ ul.nav > li.current_page_item.current > a:before {
 /* FOCUS BOX */
 .focus-box .service-icon {
 	margin-bottom: 30px;
-	width: 145px;
-	height: 145px;
+	width: 240px;
+	height: 240px;
 	margin: auto;
 	border-radius: 50%;
 	border: 10px solid #ececec;
@@ -2640,12 +2640,26 @@ width: -webkit-calc(100% / 4);
  **   Testionial           -----
 -----------------------------------------*/
 .testimonial {
-	background: #dbbf56;
+	background: #8fe4d0;
 	padding-bottom: 90px;
 }
 .testimonial .section-header h6 {
 	color: #FFF;
 }
+
+.testimonial p::first-letter {
+	font-size: 60px;
+	font-weight: bold;
+	//border: 1px solid lightblue;
+	margin-right: 8px;
+
+}
+
+.testimonial p {
+	color: #3c3c3c;
+
+}
+
 #client-feedbacks .feedback-box {
 	width: 30%;
 	float:left;
@@ -4867,4 +4881,21 @@ body.custom-background {
 
 .zerif-copyright-box {
 	width: 100%;
+}
+
+
+
+
+
+/**/
+
+/*Customized*/
+
+/**/
+
+.imagelink{
+	color: #FFF;
+}
+.home-btn{
+	padding: 30px 80px;
 }
