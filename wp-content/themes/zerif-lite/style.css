@@ -860,7 +860,7 @@ a:active {
 	text-transform: uppercase;
 	margin-bottom: 30px;
 	font-weight: bold;
-	font-size: 17px;
+	font-size: 30px;
 	position: relative;
 	text-align: left;
 	margin-top: 30px;
@@ -1412,7 +1412,7 @@ object {
     margin: 0;
 }
 .header_title a {
-	color:#000;
+	color:#ffffff;
 }
 /*----  SECTION:  HOME > TOP BAR   ----*/
  #site-navigation {
@@ -2643,8 +2643,8 @@ width: -webkit-calc(100% / 4);
 	background: #8fe4d0;
 	padding-bottom: 90px;
 }
-.testimonial .section-header h6 {
-	color: #FFF;
+.testimonial .section-header h6,.testimonial .section-header h2 {
+	color: #000000;
 }
 
 .testimonial p::first-letter {
@@ -2655,8 +2655,12 @@ width: -webkit-calc(100% / 4);
 
 }
 
+.testimonial.title {	
+      color: #34AC8F;
+}
+
 .testimonial p {
-	color: #3c3c3c;
+	color: #000000;
 
 }
 

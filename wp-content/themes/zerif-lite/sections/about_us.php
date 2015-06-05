@@ -80,7 +80,7 @@
 				if( !empty($zerif_aboutus_biglefttitle) ):
 
 
-					echo '<div class="col-lg-' . $colCount . ' col-md-' . $colCount . ' column">';
+					echo '<div class="col-lg-4 col-md-4 column">';
 
 
 						echo '<div class="big-intro" data-scrollreveal="enter left after 0s over 1s">';
@@ -100,7 +100,7 @@
 
 			if( !empty($zerif_aboutus_text) ):
 
-				echo '<div class="col-lg-' . $colCount . ' col-md-' . $colCount . ' column" data-scrollreveal="enter bottom after 0s over 1s">';
+				echo '<div class="col-lg-8 col-md-8 column" data-scrollreveal="enter bottom after 0s over 1s">';
 
 
 						echo '<p>';
@@ -126,10 +126,10 @@
 		<!-- COLUMN 1 - SKILSS-->
 
 
-		<div class="col-lg-<?php echo $colCount; ?> col-md-<?php echo $colCount; ?> column">
+		 <!-- <div class="col-lg-<?php echo $colCount; ?> col-md-<?php echo $colCount; ?> column"> -->
 
 
-			<ul class="skills" data-scrollreveal="enter right after 0s over 1s">
+			<!-- <ul class="skills" data-scrollreveal="enter right after 0s over 1s"> -->
 
 
 
@@ -138,42 +138,42 @@
 				<!-- SKILL ONE -->
 
 
-				<li class="skill">
+			<!-- 	<li class="skill">
 
 
 					<?php
 
 
-						$zerif_aboutus_feature1_nr = get_theme_mod('zerif_aboutus_feature1_nr','80');
+						// $zerif_aboutus_feature1_nr = get_theme_mod('zerif_aboutus_feature1_nr','80');
 
 
-						if( !empty($zerif_aboutus_feature1_nr) ):
+						// if( !empty($zerif_aboutus_feature1_nr) ):
 
 
-							echo '<div class="skill-count">';
+						// 	echo '<div class="skill-count">';
 
 
-								echo '<input type="text" value="'.$zerif_aboutus_feature1_nr.'" data-thickness=".2" class="skill1">';
+						// 		echo '<input type="text" value="'.$zerif_aboutus_feature1_nr.'" data-thickness=".2" class="skill1">';
 
 
-							echo '</div>';
+						// 	echo '</div>';
 
 
-						endif;
+						// endif;
 
-						if( !empty($zerif_aboutus_feature1_title) ):
-							echo '<h6>'.__($zerif_aboutus_feature1_title,'zerif-lite').'</h6>';
-						endif;
+						// if( !empty($zerif_aboutus_feature1_title) ):
+						// 	echo '<h6>'.__($zerif_aboutus_feature1_title,'zerif-lite').'</h6>';
+						// endif;
 
-						if( !empty($zerif_aboutus_feature1_text) ):
-							echo '<p>'.__($zerif_aboutus_feature1_text,'zerif-lite').'</p>';
-						endif;
+						// if( !empty($zerif_aboutus_feature1_text) ):
+						// 	echo '<p>'.__($zerif_aboutus_feature1_text,'zerif-lite').'</p>';
+						// endif;
 
 
 					?>
 
 
-				</li>
+				</li> -->
 
 
 
@@ -182,44 +182,44 @@
 				<!-- SKILL TWO -->
 
 
-				<li class="skill">
+			<!-- 	<li class="skill">
 
 
 					<?php
 
 
-						$zerif_aboutus_feature2_nr = get_theme_mod('zerif_aboutus_feature2_nr','91');
+						// $zerif_aboutus_feature2_nr = get_theme_mod('zerif_aboutus_feature2_nr','91');
 
 
-						if( !empty($zerif_aboutus_feature2_nr) ):
+						// if( !empty($zerif_aboutus_feature2_nr) ):
 
 
-							echo '<div class="skill-count">';
+						// 	echo '<div class="skill-count">';
 
 
-								echo '<input type="text" value="'.$zerif_aboutus_feature2_nr.'" data-thickness=".2" class="skill2">';
+						// 		echo '<input type="text" value="'.$zerif_aboutus_feature2_nr.'" data-thickness=".2" class="skill2">';
 
 
-							echo '</div>';
+						// 	echo '</div>';
 
 
-						endif;
+						// endif;
 
-						$zerif_aboutus_feature2_title = get_theme_mod('zerif_aboutus_feature2_title',__('YOUR SKILL #2','zerif-lite'));
-						$zerif_aboutus_feature2_text = get_theme_mod('zerif_aboutus_feature2_text');
+						// $zerif_aboutus_feature2_title = get_theme_mod('zerif_aboutus_feature2_title',__('YOUR SKILL #2','zerif-lite'));
+						// $zerif_aboutus_feature2_text = get_theme_mod('zerif_aboutus_feature2_text');
 
-						if( !empty($zerif_aboutus_feature2_title) ):
-							echo '<h6>'.__($zerif_aboutus_feature2_title,'zerif-lite').'</h6>';
-						endif;
+						// if( !empty($zerif_aboutus_feature2_title) ):
+						// 	echo '<h6>'.__($zerif_aboutus_feature2_title,'zerif-lite').'</h6>';
+						// endif;
 
-						if( !empty($zerif_aboutus_feature2_text) ):
-							echo '<p>'.__($zerif_aboutus_feature2_text,'zerif-lite').'</p>';
-						endif;
+						// if( !empty($zerif_aboutus_feature2_text) ):
+						// 	echo '<p>'.__($zerif_aboutus_feature2_text,'zerif-lite').'</p>';
+						// endif;
 
 
 					?>
 
-				</li>
+				</li>--> 
 
 
 
@@ -228,101 +228,101 @@
 				<!-- SKILL THREE -->
 
 
-				<li class="skill">
+				<!-- <li class="skill">
 
 
 					<?php
 
 
-						$zerif_aboutus_feature3_nr = get_theme_mod('zerif_aboutus_feature3_nr','88');
+						// $zerif_aboutus_feature3_nr = get_theme_mod('zerif_aboutus_feature3_nr','88');
 
 
-						if( !empty($zerif_aboutus_feature3_nr) ):
+						// if( !empty($zerif_aboutus_feature3_nr) ):
 
 
-							echo '<div class="skill-count">';
+						// 	echo '<div class="skill-count">';
 
 
-								echo '<input type="text" value="'.$zerif_aboutus_feature3_nr.'" data-thickness=".2" class="skill3">';
+						// 		echo '<input type="text" value="'.$zerif_aboutus_feature3_nr.'" data-thickness=".2" class="skill3">';
 
 
-							echo '</div>';
+						// 	echo '</div>';
 
 
-						endif;
+						// endif;
 
-						$zerif_aboutus_feature3_title = get_theme_mod('zerif_aboutus_feature3_title',__('YOUR SKILL #3','zerif-lite'));
-						$zerif_aboutus_feature3_text = get_theme_mod('zerif_aboutus_feature3_text');
+						// $zerif_aboutus_feature3_title = get_theme_mod('zerif_aboutus_feature3_title',__('YOUR SKILL #3','zerif-lite'));
+						// $zerif_aboutus_feature3_text = get_theme_mod('zerif_aboutus_feature3_text');
 
-						if( !empty($zerif_aboutus_feature3_title) ):
-							echo '<h6>'.__($zerif_aboutus_feature3_title,'zerif-lite').'</h6>';
-						endif;
+						// if( !empty($zerif_aboutus_feature3_title) ):
+						// 	echo '<h6>'.__($zerif_aboutus_feature3_title,'zerif-lite').'</h6>';
+						// endif;
 
-						if( !empty($zerif_aboutus_feature3_text) ):
-							echo '<p>'.__($zerif_aboutus_feature3_text,'zerif-lite').'</p>';
-						endif;
+						// if( !empty($zerif_aboutus_feature3_text) ):
+						// 	echo '<p>'.__($zerif_aboutus_feature3_text,'zerif-lite').'</p>';
+						// endif;
 
 
 					?>
 
 
-				</li>
+				</li> -->
 
 
 				<!-- SKILL FOUR -->
 
 
-				<li class="skill">
+				<!-- <li class="skill">
 
 
 					<?php
 
 
-						$zerif_aboutus_feature4_nr = get_theme_mod('zerif_aboutus_feature4_nr','95');
+						// $zerif_aboutus_feature4_nr = get_theme_mod('zerif_aboutus_feature4_nr','95');
 
 
-						if( !empty($zerif_aboutus_feature4_nr) ):
+						// if( !empty($zerif_aboutus_feature4_nr) ):
 
 
-							echo '<div class="skill-count">';
+						// 	echo '<div class="skill-count">';
 
 
-								echo '<input type="text" value="'.$zerif_aboutus_feature4_nr.'" data-thickness=".2" class="skill4">';
+						// 		echo '<input type="text" value="'.$zerif_aboutus_feature4_nr.'" data-thickness=".2" class="skill4">';
 
 
-							echo '</div>';
+						// 	echo '</div>';
 
 
-						endif;
+						// endif;
 
-						$zerif_aboutus_feature4_title = get_theme_mod('zerif_aboutus_feature4_title',__('YOUR SKILL #4','zerif-lite'));
-						$zerif_aboutus_feature4_text = get_theme_mod('zerif_aboutus_feature4_text');
+						// $zerif_aboutus_feature4_title = get_theme_mod('zerif_aboutus_feature4_title',__('YOUR SKILL #4','zerif-lite'));
+						// $zerif_aboutus_feature4_text = get_theme_mod('zerif_aboutus_feature4_text');
 
-						if( !empty($zerif_aboutus_feature4_title) ):
-							echo '<h6>'.__($zerif_aboutus_feature4_title,'zerif-lite').'</h6>';
-						endif;
+						// if( !empty($zerif_aboutus_feature4_title) ):
+						// 	echo '<h6>'.__($zerif_aboutus_feature4_title,'zerif-lite').'</h6>';
+						// endif;
 
-						if( !empty($zerif_aboutus_feature4_text) ):
-							echo '<p>'.__($zerif_aboutus_feature4_text,'zerif-lite').'</p>';
-						endif;
+						// if( !empty($zerif_aboutus_feature4_text) ):
+						// 	echo '<p>'.__($zerif_aboutus_feature4_text,'zerif-lite').'</p>';
+						// endif;
 
 
 					?>
 
 
 				</li>
+ -->
 
 
 
 
-
-			</ul>
-
-
-		</div> <!-- / END SKILLS COLUMN-->
+			<!-- </ul> -->
 
 
-	</div> <!-- / END 3 COLUMNS OF ABOUT US-->
+		<!-- </div>  / END SKILLS COLUMN -->
+
+
+	<!-- </div>  / END 3 COLUMNS OF ABOUT US -->
 
 
 
