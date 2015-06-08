@@ -1,0 +1,278 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Plugin Flash Page Flip\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-11-03 09:01-0300\n"
+"PO-Revision-Date: 2011-04-01 13:13+0200\n"
+"Last-Translator: ezoryak web media <info@ezoryak.com>\n"
+"Language-Team: Andres Molina dot org <amolina@andresmolina.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Turkish\n"
+"X-Poedit-Country: TURKEY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: pageflip.php:31
+msgid "You are not allowed to call this page directly."
+msgstr "Bu sayfaya doğrudan erişim izni verilmez."
+
+#: pageflip.php:39
+msgid "Wordpress Flash PageFlip"
+msgstr "Wordpress Flash PageFlip"
+
+#: pageflip.php:39
+msgid "Flash Page Flip"
+msgstr "Flash Page Flip"
+
+#: pageflip.php:43
+msgid "Configuracion de Wordpress Flash Page Flip"
+msgstr "Wordpress Flash Page Flip Ayarları"
+
+#: pageflip.php:43
+msgid "Configuracion"
+msgstr "Ayarlar"
+
+#: pageflip.php:46
+msgid "Acerca de Wordpress Flash Page Flip"
+msgstr "Wordpress Flash Page Flip Hakkında"
+
+#: pageflip.php:46
+#: pageflip.php:195
+msgid "Acerca de"
+msgstr "Hakkında"
+
+#: pageflip.php:49
+msgid "Instalar archivo base"
+msgstr "Temel dosyayı yükleyin"
+
+#: pageflip.php:49
+msgid "Instalar Archivo base"
+msgstr "Temel dosyayı yükleyin"
+
+#: pageflip.php:61
+msgid "Tienes instalado el archivo Base."
+msgstr "Temel dosya yüklendi."
+
+#: pageflip.php:63
+msgid "Error: Debes subir el archivo base.zip en esta ruta: "
+msgstr "Hata: Bu ​​dizine temel dosyayı (base.zip) yükleyin:"
+
+#: pageflip.php:70
+msgid "Debes elejir la pagina base donde publicaras los Page Flip"
+msgstr "Kataloglar için Anasayfa seçin (Ekleyeceğiniz alt sayfalar otomatik FlashPageFlip formatında çıkacaktır.)"
+
+#: pageflip.php:78
+msgid "Administracion de Wordpress Page Flip Book"
+msgstr "Yönetim Paneli - Wordpress Page Flip Book"
+
+#: pageflip.php:83
+msgid "Chequeo del Plugin"
+msgstr "Eklenti Kontrol Sayfası"
+
+#: pageflip.php:90
+msgid "Flip Book Base:"
+msgstr "Flip Book Temel Dosya"
+
+#: pageflip.php:91
+msgid "Pagina Base"
+msgstr "Page Flip Sayfası"
+
+#: pageflip.php:93
+msgid "Las siguiente opciones se cambian en el archivo"
+msgstr "Aşağıdaki seçeneklerin tutulduğu dosya"
+
+#: pageflip.php:94
+msgid "Ancho"
+msgstr "Genişlik"
+
+#: pageflip.php:95
+msgid "Alto"
+msgstr "Yükseklik"
+
+#: pageflip.php:96
+msgid "Variable Option con el tamano del Thumbnail"
+msgstr "Kullanılacak resim boyutu"
+
+#: pageflip.php:97
+msgid "Target(para los thumnails de la pagina principal)"
+msgstr "Hedef (Küçük resme tıklandığında açılacak galeri sayfasının çerçevesi)"
+
+#: pageflip.php:98
+msgid "Color de fondo"
+msgstr "Arkaplan Rengi"
+
+#: pageflip.php:99
+msgid "Color del cargador"
+msgstr "Yükleniyor Rengi"
+
+#: pageflip.php:100
+msgid "Color del panel"
+msgstr "Panel Rengi"
+
+#: pageflip.php:101
+msgid "Color de Botones"
+msgstr "Buton Rengi"
+
+#: pageflip.php:102
+msgid "Color del Texto"
+msgstr "Yazı Rengi"
+
+#: pageflip.php:103
+msgid "Nombre de la carpeta"
+msgstr "Katalogların yer alacağı klasör (wp-content altında)"
+
+#: pageflip.php:146
+msgid "Options saved."
+msgstr "Değişiklikler Kaydedildi"
+
+#: pageflip.php:157
+msgid "Configuracion de Wordpress Page Flip Book"
+msgstr "Wordpress Page Flip Book Ayarları"
+
+#: pageflip.php:161
+msgid "Configuracion de la pagina principal"
+msgstr "Flash Page Flip Anasayfası Ayarları"
+
+#: pageflip.php:162
+msgid "Debe indicar bajo que pagina ser&aacute;n creados los flipbooks"
+msgstr "Katalog/Galerileriniz için bir ana sayfa seçmelisiniz. Ekleyeceğiniz alt sayfalar katalog/galeri olarak otomatik oluşacak ve bu sayfa içinde kçük resimler halinde yayınlanacaktır."
+
+#: pageflip.php:163
+msgid "Seleccione la pagina padre: "
+msgstr "Anasayfa seçin"
+
+#: pageflip.php:184
+msgid "Update Options"
+msgstr "Ayarları Kaydet"
+
+#: pageflip.php:196
+msgid "Copyright 2010  Andres Ramiro Molina Romero  (email : amolina@andresmolina.org)"
+msgstr "Copyright 2010  Andres Ramiro Molina Romero  (email : amolina@andresmolina.org)"
+
+#: pageflip.php:197
+msgid ""
+"Plugin Name: Wordpress Flash Page Flip<br>\n"
+"Plugin URI: http://andresmolina.org<br>\n"
+"Description: Crea un flip book.<br>\n"
+"Version:1.0<br>\n"
+"Author: Andrés Molina<br>\n"
+"Author URI: http://andresmolina.org<br>\n"
+"License: GPL2</p>"
+msgstr ""
+"Plugin Name: Wordpress Flash Page Flip<br>\n"
+"Plugin URI: http://andresmolina.org<br>\n"
+"Description: Crea un flip book.<br>\n"
+"Version:1.0<br>\n"
+"Author: Andrés Molina<br>\n"
+"Türkçe Çeviri: ezoryak web media<br>\n"
+"Author URI: http://andresmolina.org<br>\n"
+"License: GPL2</p>"
+
+#: pageflip.php:210
+msgid "El archivo se subi&oacute;, comprobando archivo"
+msgstr "Dosya yüklenecek, şimdi bağlantı kontrol ediliyor"
+
+#: pageflip.php:234
+msgid "El archivo se subi&oacute; con el nombre base.zip, dentro de la carpeta de tu plugin"
+msgstr "base.zip eklentisi bu klasöre yüklenir."
+
+#: pageflip.php:236
+msgid "Ocurrio un problema al subir el archivo, intenta subiendolo por FTP."
+msgstr "Yükleme yapılamadı, FTP ayarlarınınız kontrol edin. Dosya yazma izni olmayabilir."
+
+#: pageflip.php:241
+#: pageflip.php:307
+msgid "El archivo zip debe contener una carpeta llamada <strong>Free Version</strong>."
+msgstr "İndirdiğiniz zip dosyası <strong>Free Version</strong> adında bir klaösr içermelidir."
+
+#: pageflip.php:247
+msgid "El archivo sobrepasa el limite autorizado por el servidor(archivo php.ini) !"
+msgstr "Yüklenen dosya php.ini içindeki upload_max_filesize dosya limitini aşıyor."
+
+#: pageflip.php:250
+msgid "El archivo sobrepasa el limite autorizado en el formulario HTML !"
+msgstr "Yüklenen dosya HTML biçiminde belirlenmiş MAX_FILE_SIZE limitini aşıyor."
+
+#: pageflip.php:253
+msgid "El envio del archivo ha sido suspendido durante la transferencia!"
+msgstr "Malesef dosyanın sadece bir kısmı yüklenebildi."
+
+#: pageflip.php:256
+msgid "El archivo que ha enviado tiene un tamano nulo !"
+msgstr "Dosya Yüklenemedi..!"
+
+#: pageflip.php:259
+msgid "No pudimos encontrar el archivo temporal"
+msgstr "Geçici dosya bulunamıyor. PHP 4.3.10 ve PHP 5.0.3 sürümlerinde tanıtıldı"
+
+#: pageflip.php:262
+msgid "Fallo en la escritura del archivo en el disco !"
+msgstr "Dosya yükleme başarısız, yazma yetkisi kısıtlı. PHP 5.1.0 sürümünde tanıltıldı"
+
+#: pageflip.php:265
+msgid "Una extension de php detuvo la subida del archivo !"
+msgstr "Bir PHP dokümanı dosya yüklemeyi durdurdu. phpinfo () fonksiyonu ile eklentiler listesini inceleyerek, dosya yüklemeye engel olan PHP fnksiyonunu görebilirsiniz. PHP 5.2.0'da tanımlanmıştır."
+
+#: pageflip.php:281
+msgid "Intentando obtener el archivo desde la URL, comprobando archivo"
+msgstr "URL'den dosya indirilmeye çalışılıyor; dosya denetleniyor ..."
+
+#: pageflip.php:305
+msgid "El archivo subio como base.zip a la carpeta de su plugin"
+msgstr "Bu dosya eklentiler (plugin) içerisine base.zip dosyası olarak kaydedilir."
+
+#: pageflip.php:314
+msgid "La url proporcionada no es valida, debe contener un archivo zip y debe comenzar por <strong>http://www.flashpageflip.com</strong>."
+msgstr "The url is not valid, must contain a  zip file and  the domain is <strong>http://www.flashpageflip.com</strong>."
+
+#: pageflip.php:320
+msgid "Instalar Archivo Base de Flash Page Flip"
+msgstr "Flash Page Flip base.zip temel dosyasını yükleyin"
+
+#: pageflip.php:321
+msgid "<p>Necesitas subir <strong>Flash Page Flip</strong>, puedes copiarlo <a href='http://www.flashpageflip.com/downloads/FreeVersion/FlashPageFlip_FreeVersion.zip'>directamente desde la web del fabricante</a>  o subirlo desde tu computador.<br><br>Antes de subirlo necesitas leer y aceptar los terminos de uso<br><br>"
+msgstr "<p><strong>Flash Page Flip</strong> oluşturucu dosyasına ihtiyacınız var.<a href='http://www.flashpageflip.com/downloads/FreeVersion/FlashPageFlip_FreeVersion.zip'>Yapımcısın sitesinden indirip</a> ftp'den yükleyebilir veya direkt sunucuya indirebilirsiniz.<br><br>Yükleme yapabilmek için kullanım sözleşmesini onaylamanız gerekiyor.<br><br>"
+
+#: pageflip.php:325
+msgid "Puedes leer los terminos y condiciones desde <a href=\"http://www.flashpageflip.com/Terms-of-Use.asp\" target=\"_blank\">la pagina del fabricante</a> o desde la copia de abajo:"
+msgstr "Kullanım ve hizmet koşullarını<a href=\"http://www.flashpageflip.com/Terms-of-Use.asp\" target=\"_blank\"> yapımcısının sitesinden</a> veya aşaki kopyasını okuyabilirsiniz:"
+
+#: pageflip.php:327
+msgid ""
+"<ul>\n"
+"    \t<li>Do not use FPF in web sites providing any kind of illegal content such as pornography, sexuality, adult content, gambling, betting, alcohol or tobacco use, drug abuse etc...</li>\n"
+"\t\t<li>You can only edit allowed areas on FPF and you cannot deformate except these areas.</li>\n"
+"\t\t<li>You can't offer FPF for use of any other individuals. Anywise you can't give FPF somebody else.</li>\n"
+"\t\t<li> You can't use FPF more than the allowed quota of licence which you bought.</li>\n"
+"\t\t<li>The prices are valid for received product. We don't guarantee new updates but perhaps we will inform you something new.</li>\n"
+"\t\t<li> Do not forget that disobedience to any of rules listed above is a crime and puts you under legal resbonsibility.</li>\n"
+"\t\t<li>You agree all rules when you purchase any version of Flash Page Flip.</li>\n"
+"\t</ul>"
+msgstr ""
+"<ul>\n"
+"    \t<li>Pornografi, cinsellik, yetişkin içerik, kumar, bahis, alkol ve tütün kullanımı gibi yasadışı içerik, uyuşturucu vb her türlü içerik barındıran internet sitelerinde FPF kullanılamaz...</li>\n"
+"\t\t<li>Eklenti üzerinde sadece FPF alanları düzenleyebilir ve bu alanlarda dışında düzenleme yapamazsınız...</li>\n"
+"\t\t<li>Üçüncü şahıslar için FRF sunamaz, herhangi şekilde başka birine FRF veremezsiniz...</li>\n"
+"\t\t<li> Satın aldığınız lisans kotasından fazla sayıda kullanamazsınız....</li>\n"
+"\t\t<li>Fiyatlar satıla ürün için geçerlidir. Yapılacak güncellemelerin ücretli olup olmayacağına yayıncı karar verir..</li>\n"
+"\t\t<li>yukarıdaki maddelerden herhangi birini ihlal etmek suçtur ve hukuki süreç başlatılır.</li>\n"
+"\t\t<li>Flash Page Flip herhangi bir sürümünü satın aldığınızda tüm kullanım şartlarını kabul etmiş sayılırsınız.</li>\n"
+"\t</ul>"
+
+#: pageflip.php:340
+msgid "Acepto los terminos y condiciones"
+msgstr "Kullanım sözleşmesini kabul ediyorum."
+
+#: pageflip.php:341
+msgid "http://www.flashpageflip.com/downloads/FreeVersion/FlashPageFlip_FreeVersion.zip"
+msgstr "http://www.flashpageflip.com/downloads/FreeVersion/FlashPageFlip_FreeVersion.zip"
+
+#: pageflip.php:341
+msgid "Copia la url"
+msgstr "URL'yi kopyalıp yapıştırın"
+
+#: pageflip.php:343
+msgid "Subir desde el computador"
+msgstr "Bilgisayarımdan yükle."
+

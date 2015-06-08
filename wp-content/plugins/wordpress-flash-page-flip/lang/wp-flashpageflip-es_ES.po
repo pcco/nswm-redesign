@@ -1,0 +1,277 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Plugin Flash PAge Flip\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-11-03 09:01-0300\n"
+"PO-Revision-Date: 2010-11-03 09:35-0300\n"
+"Last-Translator: Andres Molina <andres.slp@gmail.com>\n"
+"Language-Team: Andres Molina dot org <amolina@andresmolina.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: pageflip.php:31
+msgid "You are not allowed to call this page directly."
+msgstr "No puedes acceder esta p&aacute;gina. de forma directa"
+
+#: pageflip.php:39
+msgid "Wordpress Flash PageFlip"
+msgstr "Wordpress Flash PageFlip"
+
+#: pageflip.php:39
+msgid "Flash Page Flip"
+msgstr "Flash Page Flip"
+
+#: pageflip.php:43
+msgid "Configuracion de Wordpress Flash Page Flip"
+msgstr "Configuraci&oacute;n de Wordpress Flash Page Flip"
+
+#: pageflip.php:43
+msgid "Configuracion"
+msgstr "Configuraci&oacute;n"
+
+#: pageflip.php:46
+msgid "Acerca de Wordpress Flash Page Flip"
+msgstr "Acerca de Wordpress Flash Page Flip"
+
+#: pageflip.php:46
+#: pageflip.php:195
+msgid "Acerca de"
+msgstr "Acerca de"
+
+#: pageflip.php:49
+msgid "Instalar archivo base"
+msgstr "Instalar archivo base"
+
+#: pageflip.php:49
+msgid "Instalar Archivo base"
+msgstr "Instalar Archivo base"
+
+#: pageflip.php:61
+msgid "Tienes instalado el archivo Base."
+msgstr "Tienes instalado el archivo Base."
+
+#: pageflip.php:63
+msgid "Error: Debes subir el archivo base.zip en esta ruta: "
+msgstr "Error: Debes subir el archivo base.zip en esta ruta: "
+
+#: pageflip.php:70
+msgid "Debes elejir la pagina base donde publicaras los Page Flip"
+msgstr "Debes elejir la pagina base donde publicar&aacute;s los Page Flip"
+
+#: pageflip.php:78
+msgid "Administracion de Wordpress Page Flip Book"
+msgstr "Administracion de Wordpress Page Flip Book"
+
+#: pageflip.php:83
+msgid "Chequeo del Plugin"
+msgstr "Chequeo del Plugin"
+
+#: pageflip.php:90
+msgid "Flip Book Base:"
+msgstr "Flip Book Base:"
+
+#: pageflip.php:91
+msgid "Pagina Base"
+msgstr "P&aacute;gina Base"
+
+#: pageflip.php:93
+msgid "Las siguiente opciones se cambian en el archivo"
+msgstr "Las siguientes opciones se cambian en el archivo"
+
+#: pageflip.php:94
+msgid "Ancho"
+msgstr "Ancho"
+
+#: pageflip.php:95
+msgid "Alto"
+msgstr "Alto"
+
+#: pageflip.php:96
+msgid "Variable Option con el tamano del Thumbnail"
+msgstr "Variable Option con el tamaño del Thumbnail"
+
+#: pageflip.php:97
+msgid "Target(para los thumnails de la pagina principal)"
+msgstr "Target(para los thumnails de la pagina principal)"
+
+#: pageflip.php:98
+msgid "Color de fondo"
+msgstr "Color de fondo"
+
+#: pageflip.php:99
+msgid "Color del cargador"
+msgstr "Color del cargador"
+
+#: pageflip.php:100
+msgid "Color del panel"
+msgstr "Color del panel"
+
+#: pageflip.php:101
+msgid "Color de Botones"
+msgstr "Color de Botones"
+
+#: pageflip.php:102
+msgid "Color del Texto"
+msgstr "Color del Texto"
+
+#: pageflip.php:103
+msgid "Nombre de la carpeta"
+msgstr "Nombre de la carpeta"
+
+#: pageflip.php:146
+msgid "Options saved."
+msgstr "Los cambios fueron guardados."
+
+#: pageflip.php:157
+msgid "Configuracion de Wordpress Page Flip Book"
+msgstr "Configuraci&oacute;n de Wordpress Page Flip Book"
+
+#: pageflip.php:161
+msgid "Configuracion de la pagina principal"
+msgstr "Configuraci&oacute;n de la pagina principal"
+
+#: pageflip.php:162
+msgid "Debe indicar bajo que pagina ser&aacute;n creados los flipbooks"
+msgstr "Debe indicar bajo que p&aacute;gina ser&aacute;n creados los flipbooks"
+
+#: pageflip.php:163
+msgid "Seleccione la pagina padre: "
+msgstr "Seleccione la p&aacute;gina padre:"
+
+#: pageflip.php:184
+msgid "Update Options"
+msgstr "Actualizar Opciones"
+
+#: pageflip.php:196
+msgid "Copyright 2010  Andres Ramiro Molina Romero  (email : amolina@andresmolina.org)"
+msgstr "Copyright 2010  Andres Ramiro Molina Romero  (email : amolina@andresmolina.org)"
+
+#: pageflip.php:197
+msgid ""
+"Plugin Name: Wordpress Flash Page Flip<br>\n"
+"Plugin URI: http://andresmolina.org<br>\n"
+"Description: Crea un flip book.<br>\n"
+"Version:1.0<br>\n"
+"Author: Andrés Molina<br>\n"
+"Author URI: http://andresmolina.org<br>\n"
+"License: GPL2</p>"
+msgstr ""
+"Plugin Name: Wordpress Flash Page Flip<br>\n"
+"Plugin URI: http://andresmolina.org<br>\n"
+"Description: Crea un flip book.<br>\n"
+"Version:1.0<br>\n"
+"Author: Andrés Molina<br>\n"
+"Author URI: http://andresmolina.org<br>\n"
+"License: GPL2</p>"
+
+#: pageflip.php:210
+msgid "El archivo se subi&oacute;, comprobando archivo"
+msgstr "El archivo se subi&oacute;, comprobando archivo"
+
+#: pageflip.php:234
+msgid "El archivo se subi&oacute; con el nombre base.zip, dentro de la carpeta de tu plugin"
+msgstr "El archivo se subi&oacute; con el nombre base.zip, dentro de la carpeta de tu plugin"
+
+#: pageflip.php:236
+msgid "Ocurrio un problema al subir el archivo, intenta subiendolo por FTP."
+msgstr "Ocurri&oacute; un problema al subir el archivo, intenta subiendolo por FTP."
+
+#: pageflip.php:241
+#: pageflip.php:307
+msgid "El archivo zip debe contener una carpeta llamada <strong>Free Version</strong>."
+msgstr "El archivo zip debe contener una carpeta llamada <strong>Free Version</strong>."
+
+#: pageflip.php:247
+msgid "El archivo sobrepasa el limite autorizado por el servidor(archivo php.ini) !"
+msgstr "El archivo sobrepasa el limite autorizado por el servidor(archivo php.ini) !"
+
+#: pageflip.php:250
+msgid "El archivo sobrepasa el limite autorizado en el formulario HTML !"
+msgstr "El archivo sobrepasa el limite autorizado en el formulario HTML !"
+
+#: pageflip.php:253
+msgid "El envio del archivo ha sido suspendido durante la transferencia!"
+msgstr "El envio del archivo ha sido suspendido durante la transferencia!"
+
+#: pageflip.php:256
+msgid "El archivo que ha enviado tiene un tamano nulo !"
+msgstr "El archivo que ha enviado tiene un tama&ntilde;o nulo !"
+
+#: pageflip.php:259
+msgid "No pudimos encontrar el archivo temporal"
+msgstr "No pudimos encontrar el archivo temporal"
+
+#: pageflip.php:262
+msgid "Fallo en la escritura del archivo en el disco !"
+msgstr "Fallo en la escritura del archivo en el disco !"
+
+#: pageflip.php:265
+msgid "Una extension de php detuvo la subida del archivo !"
+msgstr "Una extensión de php detuvo la subida del archivo !"
+
+#: pageflip.php:281
+msgid "Intentando obtener el archivo desde la URL, comprobando archivo"
+msgstr "Intentando obtener el archivo desde la URL, comprobando archivo"
+
+#: pageflip.php:305
+msgid "El archivo subio como base.zip a la carpeta de su plugin"
+msgstr "El archivo subio como base.zip a la carpeta de su plugin"
+
+#: pageflip.php:314
+msgid "La url proporcionada no es valida, debe contener un archivo zip y debe comenzar por <strong>http://www.flashpageflip.com</strong>."
+msgstr "La url proporcionada no es válida, debe contener un archivo zip y debe comenzar por <strong>http://www.flashpageflip.com</strong>."
+
+#: pageflip.php:320
+msgid "Instalar Archivo Base de Flash Page Flip"
+msgstr "Instalar Archivo Base de Flash Page Flip"
+
+#: pageflip.php:321
+msgid "<p>Necesitas subir <strong>Flash Page Flip</strong>, puedes copiarlo <a href='http://www.flashpageflip.com/downloads/FreeVersion/FlashPageFlip_FreeVersion.zip'>directamente desde la web del fabricante</a>  o subirlo desde tu computador.<br><br>Antes de subirlo necesitas leer y aceptar los terminos de uso<br><br>"
+msgstr "<p>Necesitas subir <strong>Flash Page Flip</strong>, puedes copiarlo <a href='http://www.flashpageflip.com/downloads/FreeVersion/FlashPageFlip_FreeVersion.zip'>directamente desde la web del fabricante</a>  o subirlo desde tu computador.<br><br>Antes de subirlo necesitas leer y aceptar los terminos de uso<br><br>"
+
+#: pageflip.php:325
+msgid "Puedes leer los terminos y condiciones desde <a href=\"http://www.flashpageflip.com/Terms-of-Use.asp\" target=\"_blank\">la pagina del fabricante</a> o desde la copia de abajo:"
+msgstr "Puedes leer los terminos y condiciones desde <a href=\"http://www.flashpageflip.com/Terms-of-Use.asp\" target=\"_blank\">la pagina del fabricante</a> o desde la copia de abajo:"
+
+#: pageflip.php:327
+msgid ""
+"<ul>\n"
+"    \t<li>Do not use FPF in web sites providing any kind of illegal content such as pornography, sexuality, adult content, gambling, betting, alcohol or tobacco use, drug abuse etc...</li>\n"
+"\t\t<li>You can only edit allowed areas on FPF and you cannot deformate except these areas.</li>\n"
+"\t\t<li>You can't offer FPF for use of any other individuals. Anywise you can't give FPF somebody else.</li>\n"
+"\t\t<li> You can't use FPF more than the allowed quota of licence which you bought.</li>\n"
+"\t\t<li>The prices are valid for received product. We don't guarantee new updates but perhaps we will inform you something new.</li>\n"
+"\t\t<li> Do not forget that disobedience to any of rules listed above is a crime and puts you under legal resbonsibility.</li>\n"
+"\t\t<li>You agree all rules when you purchase any version of Flash Page Flip.</li>\n"
+"\t</ul>"
+msgstr ""
+"<ul>\n"
+"    \t<li>Do not use FPF in web sites providing any kind of illegal content such as pornography, sexuality, adult content, gambling, betting, alcohol or tobacco use, drug abuse etc...</li>\n"
+"\t\t<li>You can only edit allowed areas on FPF and you cannot deformate except these areas.</li>\n"
+"\t\t<li>You can't offer FPF for use of any other individuals. Anywise you can't give FPF somebody else.</li>\n"
+"\t\t<li> You can't use FPF more than the allowed quota of licence which you bought.</li>\n"
+"\t\t<li>The prices are valid for received product. We don't guarantee new updates but perhaps we will inform you something new.</li>\n"
+"\t\t<li> Do not forget that disobedience to any of rules listed above is a crime and puts you under legal resbonsibility.</li>\n"
+"\t\t<li>You agree all rules when you purchase any version of Flash Page Flip.</li>\n"
+"\t</ul>"
+
+#: pageflip.php:340
+msgid "Acepto los terminos y condiciones"
+msgstr "Acepto los terminos y condiciones"
+
+#: pageflip.php:341
+msgid "http://www.flashpageflip.com/downloads/FreeVersion/FlashPageFlip_FreeVersion.zip"
+msgstr "http://www.flashpageflip.com/downloads/FreeVersion/FlashPageFlip_FreeVersion.zip"
+
+#: pageflip.php:341
+msgid "Copia la url"
+msgstr "Copia la url"
+
+#: pageflip.php:343
+msgid "Subir desde el computador"
+msgstr "Subir desde el computador"
+
