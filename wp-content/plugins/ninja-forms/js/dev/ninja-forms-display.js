@@ -42,7 +42,7 @@ jQuery(document).ready(function(jQuery) {
 		jQuery(".ninja-forms-date").mask(date_format_mask);
 	}
 	if( jQuery.fn.datepicker ){
-		jQuery(".ninja-forms-datepicker").datepicker( {"dateFormat":"mm/dd/yy"} );
+		jQuery(".ninja-forms-datepicker").datepicker( ninja_forms_settings.datepicker_args );
 	}
 
 	if( jQuery.fn.autoNumeric ){
