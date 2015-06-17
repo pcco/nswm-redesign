@@ -439,6 +439,29 @@ function my_new_field_display( $field_id, $data, $form_id  ){
     $provider_args = array(
       'form_id'   => $provider_form_id
       );
+
+    if($form_id==13){
+        if(isset($_COOKIE["user_email"])) {
+            $user_email=$_COOKIE["user_email"];
+            //echo $user_email;
+            $args = array(
+              'form_id'   => 6,
+              'fields'    => array(
+                '15'      => $user_email,
+                ),
+              );
+            $subs = Ninja_Forms()->subs()->get( $args );
+            if(count($subs)>0)
+            {
+                $value=$subs[0];
+                $customer_school = $value->get_field(49);
+            // echo 'customer_school:'.$customer_school;
+            $customer_degree = $value->get_field(50);
+            // echo 'customer_degree:'.$customer_degree;
+            }
+            
+        }
+    }
     $provider_subs = Ninja_Forms()->subs()->get( $provider_args );
 
     $customer_args = array(
@@ -447,15 +470,65 @@ function my_new_field_display( $field_id, $data, $form_id  ){
     $customer_subs = Ninja_Forms()->subs()->get( $customer_args );
 
     $results = array();
+    $non_drivers=array();
+    $non_coworders=array();
 // echo count($provider_subs);
 // echo count($customer_subs);
     foreach ( $provider_subs as $sub ) {
-     $provider_field_subs=$sub->get_field( $provider_field_id );
-     foreach ($provider_field_subs as $provider_field_sub_value) {
+
+        if($provider_form_id==9){
+            $provider_school=$sub->get_field( 66 );
+            // echo 'provider_school:'.$provider_school;
+            $provider_degree=$sub->get_field( 67 );
+            // echo 'provider_degree:'.$provider_degree;
+            $provider_can_drive=$sub->get_field(68)=='YES';
+            // echo 'provider_can_drive:'.$provider_can_drive;
+            $provider_is_coworker=$sub->get_field(69)=='YES';
+            // echo 'provider_is_coworker:'.$provider_is_coworker;
+        }
+        if($provider_school!=null&&$provider_school!='All Schools'){
+            if($customer_school==null||$customer_school!=$provider_school){
+                continue;
+            }
+        }
+         // echo 'school ok';
+        if($provider_degree!=null&&$provider_degree!='All Degree'){
+            if($customer_degree==null||$customer_degree!=$provider_degree){
+                continue;
+            }
+        }
+        // echo 'degree ok';
+        $provider_field_subs=$sub->get_field( $provider_field_id );
+        if($provider_field_subs!=null){
+            // echo 'sub ok';
+        if(!$provider_can_drive){
+             // echo 'drive not ok';
+          foreach ($provider_field_subs as $provider_field_sub_value) {
         //echo($provider_field_sub_value);
-        array_push($results,$provider_field_sub_value);
+            array_push($non_drivers,$provider_field_sub_value);
+            }
+        }
+        elseif(!$provider_is_coworker){
+            // echo 'coworker not ok';
+          foreach ($provider_field_subs as $provider_field_sub_value) {
+            //echo($provider_field_sub_value);
+            array_push($non_coworders,$provider_field_sub_value);
+            }
+        }else{
+             // echo 'all ok';
+             foreach ($provider_field_subs as $provider_field_sub_value) {
+                    //echo($provider_field_sub_value);
+                array_push($results,$provider_field_sub_value);
+                // echo $provider_field_sub_value;
+            }
+        }
+        }
     }
-}
+    foreach (array_intersect($non_drivers,$non_coworders) as $value) {
+        //echo $value;
+        array_push($results,$value);
+        // echo $value;
+    }
 
 foreach ($customer_subs as $sub) {
     //echo $field_id;
@@ -463,37 +536,35 @@ foreach ($customer_subs as $sub) {
     
      //echo count($customer_field_subs);
     if(is_array($customer_field_subs)){
-     foreach ($customer_field_subs as $customer_field_sub_value) {
-         echo($customer_field_sub_value);
-         $key = array_search($customer_field_sub_value, $results); 
+       foreach ($customer_field_subs as $customer_field_sub_value) {
+           //echo($customer_field_sub_value);
+           $key = array_search($customer_field_sub_value, $results); 
 
-         unset($results[$key]);
-     }
+           unset($results[$key]);
+       }
 
- }else{
-     
-   $key =  array_search($customer_field_subs, $results); 
-    
-   if ($key !== false) {
-        unset($results[$key]);
    }else{
 
-   }
-   
+     $key =  array_search($customer_field_subs, $results); 
+
+     if ($key !== false) {
+        unset($results[$key]);
+    }else{
+
+    }
+
 }
 
 }
 $results=array_unique($results);
 sort($results);
-?>
-<select name="ninja_forms_field_<?php echo $field_id;?>" id="ninja_forms_field_<?php echo $field_id;?>" class="ninja-forms-field " rel="<?php echo $field_id;?>" <?php echo $required;?>>
+$hideclass=count($results)>0?'':'hide';
 
-  <?php
-  if(count($results)>0){
-    ?>
-    <option value="" disabled  selected>Please Select</option>
+?>
+<select name="ninja_forms_field_<?php echo $field_id;?>" id="ninja_forms_field_<?php echo $field_id;?>" class="ninja-forms-field <?php echo count($results)>0?'':'hide';?>" rel="<?php echo $field_id;?>" <?php echo $required;?>>
+<option value="" disabled  selected>Please Select</option>
     <?php
-}
+
 
 //$formData= ninja_forms_get_form_by_field_id( $field_id );
 
@@ -510,16 +581,20 @@ sort($results);
   // Echoes out the submitted value for a field
   // $field_sub=$sub->get_field( $ds_field_id );
 foreach ($results as $result) {
-   ?>
-   <option value="<?php echo $result;?>"><?php echo $result;?></option>
-   
-   <?php
+ ?>
+ <option value="<?php echo $result;?>"><?php echo $result;?></option>
+
+ <?php
 }
 
 // }
 ?>
-</select><span>还剩<?php echo count($results);?>个帮助时间可以预约</span>
-<?php
+</select><span class="<?php echo count($results)>0?'':'hide';?>">还剩<?php echo count($results);?>个帮助时间可以预约</span>
+
+  <p class="<?php echo count($results)<=0?'':'hide';?>">抱歉，我们可以提供帮助的时间都被抢完了。T_T</p>
+
+ <?php
+   
 
 
 
@@ -549,8 +624,8 @@ function register_date_list_field(){
         );
 
     if( function_exists( 'ninja_forms_register_field' ) ) {
-     ninja_forms_register_field('date_list_field', $args);
- }
+       ninja_forms_register_field('date_list_field', $args);
+   }
 }
 add_action( 'init', 'register_date_list_field' );
 /*
@@ -579,7 +654,12 @@ function date_list_field_display( $field_id, $data, $form_id  ){
 
     $startDate = new DateTime($data['date_from']);
     $endDate = new DateTime($data['date_to']);
-
+    if( isset( $data['default_value'] ) AND !empty( $data['default_value'] ) ){
+        $selected_value = $data['default_value'];
+    }else{
+        $selected_value = '';
+    }
+    //echo $selected_value[0];
     ?>
     <input type="hidden" id="ninja_forms_field_<?php echo $field_id;?>" name="ninja_forms_field_<?php echo $field_id;?>" value="">
     <span id="ninja_forms_field_<?php echo $field_id;?>_options_span" class="<?php echo $list_options_span_class;?>" rel="<?php echo $field_id;?>">
@@ -588,6 +668,16 @@ function date_list_field_display( $field_id, $data, $form_id  ){
             $x = 0;
             do {
                 $value=$startDate->format("m/d");
+                
+
+                if( is_array( $selected_value ) AND in_array($value, $selected_value) ){
+
+                    $checked = 'checked';
+                }else if($selected_value == $value){
+                    $checked = 'checked';
+                }else{
+                    $checked = '';
+                }
    //echo $startDate->format("m/d") , PHP_EOL;
                 ?><li>
                 <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options" style="<?php echo $display_style;?>">
@@ -620,6 +710,236 @@ function date_list_field_display( $field_id, $data, $form_id  ){
 
 }
 
+function ninja_forms_register_delete_existing(){
+  add_action( 'ninja_forms_process', 'ninja_forms_delete_existing' );
+}
+add_action( 'init', 'ninja_forms_register_delete_existing' );
+
+function ninja_forms_delete_existing(){
+  global $ninja_forms_processing;
+  $form_id=$ninja_forms_processing->get_form_ID();
+  if(isset($_COOKIE["user_email"])) {
+    $user_email=$_COOKIE["user_email"];
+    if($form_id==13){
+            //echo $user_email;
+        $args = array(
+          'form_id'   => $form_id,
+          'fields'    => array(
+            '78'      => $user_email,
+            ),
+          );
+        $subs = Ninja_Forms()->subs()->get( $args );
+        foreach ( $subs as $sub ) {
+        // Delete our submission. This is irreversible.
+          $sub->delete();
+        }
+      }
+      elseif($form_id==9){
+                //echo $user_email;
+            $args = array(
+              'form_id'   => $form_id,
+              'fields'    => array(
+                '55'      => $user_email,
+                ),
+              );
+            $subs = Ninja_Forms()->subs()->get( $args );
+            foreach ( $subs as $sub ) {
+          // Delete our submission. This is irreversible.
+              $sub->delete();
+            }
+        }
+        elseif ($form_id==6) {
+                //echo $user_email;
+            $args = array(
+              'form_id'   => $form_id,
+              'fields'    => array(
+                '15'      => $user_email,
+                ),
+              );
+            $subs = Ninja_Forms()->subs()->get( $args );
+            foreach ( $subs as $sub ) {
+          // Delete our submission. This is irreversible.
+              $sub->delete();
+          }
+        }
+    }
+}
+
+function ninja_forms_register_setcookie(){
+  add_action( 'ninja_forms_post_process', 'ninja_forms_setcookie' );
+}
+add_action( 'init', 'ninja_forms_register_setcookie' );
+
+function ninja_forms_setcookie(){
+  global $ninja_forms_processing;
+  $form_id=$ninja_forms_processing->get_form_ID();
+  if($form_id==6){
+    $user_value = $ninja_forms_processing->get_field_value( 15 );
+    setcookie(
+      "user_email",
+      $user_value,
+      //time() + (10 * 365 * 24 * 60 * 60),
+      0,
+      "/"
+      );
+    }
+}
+
+function ninja_register_forms_getvalues(){
+  add_action( 'ninja_forms_display_pre_init', 'ninja_forms_getvalues' );
+}
+add_action( 'init', 'ninja_register_forms_getvalues' );
+
+function ninja_forms_getvalues(){
+  global $ninja_forms_loading;
+  if($ninja_forms_loading!=null){
+
+  $form_id= $ninja_forms_loading->get_form_ID();
+  //echo $form_id;
+  if($form_id==6){
+        if(isset($_COOKIE["user_email"])) {
+            $user_email=$_COOKIE["user_email"];
+            //echo $user_email;
+            $args = array(
+              'form_id'   => $form_id,
+              'fields'    => array(
+                '15'      => $user_email,
+                ),
+              );
+            $subs = Ninja_Forms()->subs()->get( $args );
+            if(count($subs)>0)
+            {
+                $value=$subs[0];
+            }
+            else{
+                return;
+            }
+            $all_fields = $value->get_all_fields();
+            foreach ($all_fields as $field_id => $user_value) {
+               $ninja_forms_loading->update_field_value( $field_id,  $user_value );
+            }
+
+            
+        }
+    }
+    elseif($form_id==9){
+        if(isset($_COOKIE["user_email"])) {
+            $user_email=$_COOKIE["user_email"];
+            //echo $user_email;
+            $args = array(
+              'form_id'   => $form_id,
+              'fields'    => array(
+                '55'      => $user_email,
+                ),
+              );
+            $subs = Ninja_Forms()->subs()->get( $args );
+            if(count($subs)>0)
+            {
+                $value=$subs[0];
+            }
+            else{
+                return;
+            }
+            $all_fields = $value->get_all_fields();
+            foreach ($all_fields as $field_id => $user_value) {
+               $ninja_forms_loading->update_field_value( $field_id,  $user_value );
+            }
+
+            
+        }
+    }
+    elseif($form_id==13){
+        if(isset($_COOKIE["user_email"])) {
+            $user_email=$_COOKIE["user_email"];
+            //echo $user_email;
+            $args = array(
+              'form_id'   => 6,
+              'fields'    => array(
+                '15'      => $user_email,
+                ),
+              );
+             $subs = Ninja_Forms()->subs()->get( $args );
+            if(count($subs)>0)
+            {
+                $value=$subs[0];
+                $ninja_forms_loading->update_field_value( 78,  $user_email );
+            }
+            else{
+                return;
+            }
+            $needs = $value->get_field(17);
+            // foreach ($needs as $value) {
+                
+            //     echo $value;
+            // }
+            if($needs!=null){
+                if (!in_array("接机", $needs)){
+                    $setting=$ninja_forms_loading->get_field_settings(72); 
+                    $ninja_forms_loading->update_field_settings(72, 'field_class','hide') ;
+                }
+                if (!in_array("买菜", $needs)){
+                    $setting=$ninja_forms_loading->get_field_settings(73); 
+                    $ninja_forms_loading->update_field_settings(73, 'field_class','hide') ;
+                }
+                if (!in_array("购置家具", $needs)){
+                    $setting=$ninja_forms_loading->get_field_settings(74); 
+                    $ninja_forms_loading->update_field_settings(74, 'field_class','hide') ;
+                }
+                if (!in_array("临时住宿", $needs)){
+                    $setting=$ninja_forms_loading->get_field_settings(75); 
+                    $ninja_forms_loading->update_field_settings(75, 'field_class','hide') ;
+                }
+            }else{
+                header("Location: http://nswm.pccoakland.org/"); /* Redirect browser */
+                exit();
+            }
+
+        }
+    }
+}
+}
+
+// To give Editors access to the ALL Forms menu
+function my_custom_change_ninja_forms_all_forms_capabilities_filter( $capabilities ) {
+    $capabilities = "edit_pages";
+    return $capabilities;
+}
+add_filter( 'ninja_forms_admin_parent_menu_capabilities', 'my_custom_change_ninja_forms_all_forms_capabilities_filter' );
+add_filter( 'ninja_forms_admin_all_forms_capabilities', 'my_custom_change_ninja_forms_all_forms_capabilities_filter' );
+// To give Editors access to ADD New Forms
+function my_custom_change_ninja_forms_add_new_capabilities_filter( $capabilities ) {
+    $capabilities = "edit_pages";
+    return $capabilities;
+}
+add_filter( 'ninja_forms_admin_parent_menu_capabilities', 'my_custom_change_ninja_forms_add_new_capabilities_filter' );
+add_filter( 'ninja_forms_admin_add_new_capabilities', 'my_custom_change_ninja_forms_add_new_capabilities_filter' );
+
+/* To give Editors access to the Submissions - Simply replace ‘edit_posts’ in the code snippet below with the capability 
+that you would like to attach the ability to view/edit submissions to.Please note that all three filters are needed to 
+provide proper submission viewing/editing on the backend!
+*/
+function nf_subs_capabilities( $cap ) {
+    return 'edit_posts';
+}
+add_filter( 'ninja_forms_admin_submissions_capabilities', 'nf_subs_capabilities' );
+add_filter( 'ninja_forms_admin_parent_menu_capabilities', 'nf_subs_capabilities' );
+add_filter( 'ninja_forms_admin_menu_capabilities', 'nf_subs_capabilities' );
+
+// To give Editors access to the Inport/Export Options
+function my_custom_change_ninja_forms_import_export_capabilities_filter( $capabilities ) {
+    $capabilities = "edit_pages";
+    return $capabilities;
+}
+add_filter( 'ninja_forms_admin_parent_menu_capabilities', 'my_custom_change_ninja_forms_import_export_capabilities_filter' );
+add_filter( 'ninja_forms_admin_import_export_capabilities', 'my_custom_change_ninja_forms_import_export_capabilities_filter' );
+
+// To give Editors access to the the Settings page
+function my_custom_change_ninja_forms_settings_capabilities_filter( $capabilities ) {
+    $capabilities = "edit_pages";
+    return $capabilities;
+}
+add_filter( 'ninja_forms_admin_parent_menu_capabilities', 'my_custom_change_ninja_forms_settings_capabilities_filter' );
+add_filter( 'ninja_forms_admin_settings_capabilities', 'my_custom_change_ninja_forms_settings_capabilities_filter' );
 
 add_action('tgmpa_register', 'zerif_register_required_plugins');
 
@@ -642,7 +962,7 @@ function zerif_register_required_plugins()
 
 				'required' => false 
 
-               ),
+             ),
 
 			array(
 
@@ -652,7 +972,7 @@ function zerif_register_required_plugins()
 
 				'required'  => false,
 
-               ),
+             ),
 
 			array(
 
@@ -662,7 +982,7 @@ function zerif_register_required_plugins()
 
 				'required'  => false,
 
-               )
+             )
 
           );
 
@@ -678,7 +998,7 @@ function zerif_register_required_plugins()
 
 				'required'  => false,
 
-               ),
+             ),
 
 			array(
 
@@ -688,7 +1008,7 @@ function zerif_register_required_plugins()
 
 				'required'  => false,
 
-               )
+             )
 
           );
 
@@ -868,43 +1188,43 @@ class zerif_ourfocus extends WP_Widget
 
         <div class="col-lg-3 col-sm-3 focus-box" data-scrollreveal="enter left after 0.15s over 1s">
 
-           <?php if( !empty($instance['image_uri']) ): ?>
+         <?php if( !empty($instance['image_uri']) ): ?>
             <div class="service-icon">
 
                 <?php if( !empty($instance['link']) ): ?>
 
-                 <a href="<?php echo $instance['link']; ?>"><i class="pixeden" style="background:url(<?php echo esc_url($instance['image_uri']); ?>) no-repeat center;width:100%; height:100%;"></i> <!-- FOCUS ICON--></a>
+                   <a href="<?php echo $instance['link']; ?>"><i class="pixeden" style="background:url(<?php echo esc_url($instance['image_uri']); ?>) no-repeat center;width:100%; height:100%;"></i> <!-- FOCUS ICON--></a>
 
-             <?php else: ?>
+               <?php else: ?>
 
-                 <i class="pixeden" style="background:url(<?php echo esc_url($instance['image_uri']); ?>) no-repeat center;width:100%; height:100%;"></i> <!-- FOCUS ICON-->
+                   <i class="pixeden" style="background:url(<?php echo esc_url($instance['image_uri']); ?>) no-repeat center;width:100%; height:100%;"></i> <!-- FOCUS ICON-->
 
-             <?php endif; ?>
-
-
-         </div>
-     <?php endif; ?>
-
-     <h5 class="red-border-bottom"><?php if( !empty($instance['title']) ): echo apply_filters('widget_title', $instance['title']); endif; ?></h5>
-     <!-- FOCUS HEADING -->
+               <?php endif; ?>
 
 
-     <?php 
-     if( !empty($instance['text']) ):
+           </div>
+       <?php endif; ?>
 
-         echo '<p>';
-     echo htmlspecialchars_decode(apply_filters('widget_title', $instance['text']));
-     echo '</p>';
-     endif;
-     ?>	
-
- </div>
+       <h5 class="red-border-bottom"><?php if( !empty($instance['title']) ): echo apply_filters('widget_title', $instance['title']); endif; ?></h5>
+       <!-- FOCUS HEADING -->
 
 
+       <?php 
+       if( !empty($instance['text']) ):
 
- <?php
+           echo '<p>';
+       echo htmlspecialchars_decode(apply_filters('widget_title', $instance['text']));
+       echo '</p>';
+       endif;
+       ?>	
 
- echo $after_widget;
+   </div>
+
+
+
+   <?php
+
+   echo $after_widget;
 
 
 }
@@ -959,44 +1279,44 @@ function form($instance)
 
       <p>
 
-       <label for="<?php echo $this->get_field_id('link'); ?>"><?php _e('Link','zerif'); ?></label><br />
+         <label for="<?php echo $this->get_field_id('link'); ?>"><?php _e('Link','zerif'); ?></label><br />
 
-       <input type="text" name="<?php echo $this->get_field_name('link'); ?>" id="<?php echo $this->get_field_id('link'); ?>" value="<?php if( !empty($instance['link']) ): echo $instance['link']; endif; ?>" class="widefat" />
+         <input type="text" name="<?php echo $this->get_field_name('link'); ?>" id="<?php echo $this->get_field_id('link'); ?>" value="<?php if( !empty($instance['link']) ): echo $instance['link']; endif; ?>" class="widefat" />
 
-   </p>
+     </p>
 
-   <p>
+     <p>
 
-    <label for="<?php echo $this->get_field_id('image_uri'); ?>"><?php _e('Image', 'zerif-lite'); ?></label><br/>
+        <label for="<?php echo $this->get_field_id('image_uri'); ?>"><?php _e('Image', 'zerif-lite'); ?></label><br/>
+
+
+
+        <?php
+
+        if ( !empty($instance['image_uri']) ) :
+
+            echo '<img class="custom_media_image" src="' . $instance['image_uri'] . '" style="margin:0;padding:0;max-width:100px;float:left;display:inline-block" /><br />';
+
+        endif;
+
+        ?>
+
+
+
+        <input type="text" class="widefat custom_media_url" name="<?php echo $this->get_field_name('image_uri'); ?>"
+        id="<?php echo $this->get_field_id('image_uri'); ?>" value="<?php if( !empty($instance['image_uri']) ): echo $instance['image_uri']; endif; ?>"
+        style="margin-top:5px;">
+
+
+        <input type="button" class="button button-primary custom_media_button" id="custom_media_button"
+        name="<?php echo $this->get_field_name('image_uri'); ?>" value="<?php _e('Upload Image','zerif-lite'); ?>"
+        style="margin-top:5px;"/>
+
+    </p>
 
 
 
     <?php
-
-    if ( !empty($instance['image_uri']) ) :
-
-        echo '<img class="custom_media_image" src="' . $instance['image_uri'] . '" style="margin:0;padding:0;max-width:100px;float:left;display:inline-block" /><br />';
-
-    endif;
-
-    ?>
-
-
-
-    <input type="text" class="widefat custom_media_url" name="<?php echo $this->get_field_name('image_uri'); ?>"
-    id="<?php echo $this->get_field_id('image_uri'); ?>" value="<?php if( !empty($instance['image_uri']) ): echo $instance['image_uri']; endif; ?>"
-    style="margin-top:5px;">
-
-
-    <input type="button" class="button button-primary custom_media_button" id="custom_media_button"
-    name="<?php echo $this->get_field_name('image_uri'); ?>" value="<?php _e('Upload Image','zerif-lite'); ?>"
-    style="margin-top:5px;"/>
-
-</p>
-
-
-
-<?php
 
 }
 
@@ -1055,14 +1375,14 @@ class zerif_testimonial_widget extends WP_Widget
             <?php if( !empty($instance['text']) ): ?>
                 <div class="message">
 
-                 <?php echo htmlspecialchars_decode(apply_filters('widget_title', $instance['text'])); ?>
+                   <?php echo htmlspecialchars_decode(apply_filters('widget_title', $instance['text'])); ?>
 
-             </div>
-         <?php endif; ?>
+               </div>
+           <?php endif; ?>
 
-         <!-- CLIENT INFORMATION -->
+           <!-- CLIENT INFORMATION -->
 
-         <div class="client">
+           <div class="client">
 
             <div class="quote red-text">
 
@@ -1072,10 +1392,10 @@ class zerif_testimonial_widget extends WP_Widget
 
             <div class="client-info">
 
-             <a class="client-name" target="_blank" <?php if( !empty($instance['link']) ): echo 'href="'.esc_url($instance['link']).'"'; endif; ?>><?php if( !empty($instance['title']) ): echo apply_filters('widget_title', $instance['title'] ); endif; ?></a>
+               <a class="client-name" target="_blank" <?php if( !empty($instance['link']) ): echo 'href="'.esc_url($instance['link']).'"'; endif; ?>><?php if( !empty($instance['title']) ): echo apply_filters('widget_title', $instance['title'] ); endif; ?></a>
 
 
-             <?php if( !empty($instance['details']) ): ?>
+               <?php if( !empty($instance['details']) ): ?>
                 <div class="client-company">
 
                     <?php echo apply_filters('widget_title', $instance['details']); ?>
@@ -1089,17 +1409,17 @@ class zerif_testimonial_widget extends WP_Widget
 
         if( !empty($instance['image_uri']) ):
 
-         echo '<div class="client-image hidden-xs">';
+           echo '<div class="client-image hidden-xs">';
 
-     echo '<img src="' . esc_url($instance['image_uri']) . '" alt="">';
+       echo '<img src="' . esc_url($instance['image_uri']) . '" alt="">';
 
-     echo '</div>';
-     endif;	
+       echo '</div>';
+       endif;	
 
-     ?>
+       ?>
 
- </div>
- <!-- / END CLIENT INFORMATION-->
+   </div>
+   <!-- / END CLIENT INFORMATION-->
 
 </div> <!-- / END SINGLE FEEDBACK BOX-->
 
@@ -1154,13 +1474,13 @@ function form($instance)
 
     <p>
 
-       <label for="<?php echo $this->get_field_id('link'); ?>"><?php _e('Author link','zerif'); ?></label><br />
+     <label for="<?php echo $this->get_field_id('link'); ?>"><?php _e('Author link','zerif'); ?></label><br />
 
-       <input type="text" name="<?php echo $this->get_field_name('link'); ?>" id="<?php echo $this->get_field_id('link'); ?>" value="<?php if( !empty($instance['link']) ): echo $instance['link']; endif; ?>" class="widefat" />
+     <input type="text" name="<?php echo $this->get_field_name('link'); ?>" id="<?php echo $this->get_field_id('link'); ?>" value="<?php if( !empty($instance['link']) ): echo $instance['link']; endif; ?>" class="widefat" />
 
-   </p>
+ </p>
 
-   <p>
+ <p>
 
     <label for="<?php echo $this->get_field_id('details'); ?>"><?php _e('Author details', 'zerif-lite'); ?></label><br/>
 
@@ -1402,450 +1722,450 @@ class zerif_clients_widget extends WP_Widget
 
                     <?php if( !empty($instance['image_uri']) ): ?>
 
-                     <figure class="profile-pic">
+                       <figure class="profile-pic">
 
 
-                      <img src="<?php echo esc_url($instance['image_uri']); ?>" alt="">
+                          <img src="<?php echo esc_url($instance['image_uri']); ?>" alt="">
 
 
-                  </figure>
+                      </figure>
 
-              <?php endif; ?>
-
-
-              <div class="member-details">
-
-                 <?php if( !empty($instance['name']) ): ?>
-
-                  <h5 class="dark-text red-border-bottom"><?php echo apply_filters('widget_title', $instance['name']); ?></h5>
-
-              <?php endif; ?>	
-
-              <?php if( !empty($instance['position']) ): ?>
-
-                  <div class="position"><?php echo apply_filters('widget_title', $instance['position']); ?></div>
-
-              <?php endif; ?>
-
-          </div>
+                  <?php endif; ?>
 
 
-          <div class="social-icons">
+                  <div class="member-details">
+
+                   <?php if( !empty($instance['name']) ): ?>
+
+                      <h5 class="dark-text red-border-bottom"><?php echo apply_filters('widget_title', $instance['name']); ?></h5>
+
+                  <?php endif; ?>	
+
+                  <?php if( !empty($instance['position']) ): ?>
+
+                      <div class="position"><?php echo apply_filters('widget_title', $instance['position']); ?></div>
+
+                  <?php endif; ?>
+
+              </div>
 
 
-            <ul>
+              <div class="social-icons">
 
 
-                <?php if ( !empty($instance['fb_link']) ): ?>
-                    <li><a href="<?php echo apply_filters('widget_title', $instance['fb_link']); ?>"><i
-                        class="fa fa-facebook"></i></a></li>
-                    <?php endif; ?>
+                <ul>
 
-                    <?php if ( !empty($instance['tw_link']) ): ?>
-                        <li><a href="<?php echo apply_filters('widget_title', $instance['tw_link']); ?>"><i
-                            class="fa fa-twitter"></i></a></li>
+
+                    <?php if ( !empty($instance['fb_link']) ): ?>
+                        <li><a href="<?php echo apply_filters('widget_title', $instance['fb_link']); ?>"><i
+                            class="fa fa-facebook"></i></a></li>
                         <?php endif; ?>
 
-                        <?php if ( !empty($instance['bh_link']) ): ?>
-                            <li><a href="<?php echo apply_filters('widget_title', $instance['bh_link']); ?>"><i
-                                class="fa fa-behance"></i></a></li>
+                        <?php if ( !empty($instance['tw_link']) ): ?>
+                            <li><a href="<?php echo apply_filters('widget_title', $instance['tw_link']); ?>"><i
+                                class="fa fa-twitter"></i></a></li>
                             <?php endif; ?>
 
-                            <?php if ( !empty($instance['db_link']) ): ?>
-                                <li><a href="<?php echo apply_filters('widget_title', $instance['db_link']); ?>"><i
-                                    class="fa fa-dribbble"></i></a></li>
+                            <?php if ( !empty($instance['bh_link']) ): ?>
+                                <li><a href="<?php echo apply_filters('widget_title', $instance['bh_link']); ?>"><i
+                                    class="fa fa-behance"></i></a></li>
                                 <?php endif; ?>
 
-                                <?php if ( !empty($instance['ln_link']) ): ?>
-                                    <li><a href="<?php echo apply_filters('widget_title', $instance['ln_link']); ?>"><i
-                                        class="fa fa-linkedin"></i></a></li>
+                                <?php if ( !empty($instance['db_link']) ): ?>
+                                    <li><a href="<?php echo apply_filters('widget_title', $instance['db_link']); ?>"><i
+                                        class="fa fa-dribbble"></i></a></li>
                                     <?php endif; ?>
 
+                                    <?php if ( !empty($instance['ln_link']) ): ?>
+                                        <li><a href="<?php echo apply_filters('widget_title', $instance['ln_link']); ?>"><i
+                                            class="fa fa-linkedin"></i></a></li>
+                                        <?php endif; ?>
 
-                                </ul>
+
+                                    </ul>
+
+
+                                </div>
+
+
+                                <?php if( !empty($instance['description']) ): ?>
+                                    <div class="details">
+
+
+                                        <?php echo htmlspecialchars_decode(apply_filters('widget_title', $instance['description'])); ?>
+
+
+                                    </div>
+                                <?php endif; ?>
 
 
                             </div>
 
 
-                            <?php if( !empty($instance['description']) ): ?>
-                                <div class="details">
-
-
-                                    <?php echo htmlspecialchars_decode(apply_filters('widget_title', $instance['description'])); ?>
-
-
-                                </div>
-                            <?php endif; ?>
-
-
                         </div>
-
-
-                    </div>
-
-
-
-                    <?php
-
-                    echo $after_widget;
-
-
-                }
-
-
-                function update($new_instance, $old_instance)
-                {
-
-                    $instance = $old_instance;
-
-                    $instance['name'] = strip_tags($new_instance['name']);
-
-                    $instance['position'] = wp_filter_post_kses($new_instance['position']);
-
-                    $instance['description'] = wp_filter_post_kses($new_instance['description']);
-
-                    $instance['fb_link'] = strip_tags($new_instance['fb_link']);
-
-                    $instance['tw_link'] = strip_tags($new_instance['tw_link']);
-
-                    $instance['bh_link'] = strip_tags($new_instance['bh_link']);
-
-                    $instance['db_link'] = strip_tags($new_instance['db_link']);
-
-                    $instance['ln_link'] = strip_tags($new_instance['ln_link']);
-
-                    $instance['image_uri'] = strip_tags($new_instance['image_uri']);
-
-                    return $instance;
-
-                }
-
-
-                function form($instance)
-                {
-
-                    ?>
-
-
-
-                    <p>
-
-                        <label for="<?php echo $this->get_field_id('name'); ?>"><?php _e('Name', 'zerif-lite'); ?></label><br/>
-
-                        <input type="text" name="<?php echo $this->get_field_name('name'); ?>"
-                        id="<?php echo $this->get_field_id('name'); ?>" value="<?php if( !empty($instance['name']) ): echo $instance['name']; endif; ?>"
-                        class="widefat"/>
-
-                    </p>
-
-
-
-                    <p>
-
-                        <label for="<?php echo $this->get_field_id('position'); ?>"><?php _e('Position', 'zerif-lite'); ?></label><br/>
-
-                        <textarea class="widefat" rows="8" cols="20" name="<?php echo $this->get_field_name('position'); ?>"
-                          id="<?php echo $this->get_field_id('position'); ?>"><?php
-                          if( !empty($instance['position']) ): echo htmlspecialchars_decode($instance['position']); endif;
-                          ?></textarea>
-
-                      </p>
-
-
-
-                      <p>
-
-                        <label
-                        for="<?php echo $this->get_field_id('description'); ?>"><?php _e('Description', 'zerif-lite'); ?></label><br/>
-
-                        <textarea class="widefat" rows="8" cols="20" name="<?php echo $this->get_field_name('description'); ?>"
-                          id="<?php echo $this->get_field_id('description'); ?>"><?php
-                          if( !empty($instance['description']) ): echo htmlspecialchars_decode($instance['description']); endif;
-                          ?></textarea>
-
-                      </p>
-
-
-
-                      <p>
-
-                        <label
-                        for="<?php echo $this->get_field_id('fb_link'); ?>"><?php _e('Facebook link', 'zerif-lite'); ?></label><br/>
-
-                        <input type="text" name="<?php echo $this->get_field_name('fb_link'); ?>"
-                        id="<?php echo $this->get_field_id('fb_link'); ?>" value="<?php if( !empty($instance['fb_link']) ): echo $instance['fb_link']; endif; ?>"
-                        class="widefat"/>
-
-                    </p>
-
-
-
-                    <p>
-
-                        <label
-                        for="<?php echo $this->get_field_id('tw_link'); ?>"><?php _e('Twitter link', 'zerif-lite'); ?></label><br/>
-
-                        <input type="text" name="<?php echo $this->get_field_name('tw_link'); ?>"
-                        id="<?php echo $this->get_field_id('tw_link'); ?>" value="<?php if( !empty($instance['tw_link']) ): echo $instance['tw_link']; endif; ?>"
-                        class="widefat"/>
-
-                    </p>
-
-
-
-                    <p>
-
-                        <label
-                        for="<?php echo $this->get_field_id('bh_link'); ?>"><?php _e('Behance link', 'zerif-lite'); ?></label><br/>
-
-                        <input type="text" name="<?php echo $this->get_field_name('bh_link'); ?>"
-                        id="<?php echo $this->get_field_id('bh_link'); ?>" value="<?php if( !empty($instance['bh_link']) ): echo $instance['bh_link']; endif; ?>"
-                        class="widefat"/>
-
-                    </p>
-
-
-
-                    <p>
-
-                        <label
-                        for="<?php echo $this->get_field_id('db_link'); ?>"><?php _e('Dribble link', 'zerif-lite'); ?></label><br/>
-
-                        <input type="text" name="<?php echo $this->get_field_name('db_link'); ?>"
-                        id="<?php echo $this->get_field_id('db_link'); ?>" value="<?php if( !empty($instance['db_link']) ): echo $instance['db_link']; endif; ?>"
-                        class="widefat"/>
-
-                    </p>
-
-                    <p>
-
-                        <label
-                        for="<?php echo $this->get_field_id('ln_link'); ?>"><?php _e('Linkedin link', 'zerif-lite'); ?></label><br/>
-
-                        <input type="text" name="<?php echo $this->get_field_name('ln_link'); ?>"
-                        id="<?php echo $this->get_field_id('ln_link'); ?>" value="<?php if( !empty($instance['ln_link']) ): echo $instance['ln_link']; endif; ?>"
-                        class="widefat"/>
-
-                    </p>
-
-                    <p>
-
-                        <label for="<?php echo $this->get_field_id('image_uri'); ?>"><?php _e('Image', 'zerif-lite'); ?></label><br/>
 
 
 
                         <?php
 
-                        if ( !empty($instance['image_uri']) ) :
+                        echo $after_widget;
 
-                            echo '<img class="custom_media_image_team" src="' . $instance['image_uri'] . '" style="margin:0;padding:0;max-width:100px;float:left;display:inline-block" /><br />';
 
-                        endif;
+                    }
+
+
+                    function update($new_instance, $old_instance)
+                    {
+
+                        $instance = $old_instance;
+
+                        $instance['name'] = strip_tags($new_instance['name']);
+
+                        $instance['position'] = wp_filter_post_kses($new_instance['position']);
+
+                        $instance['description'] = wp_filter_post_kses($new_instance['description']);
+
+                        $instance['fb_link'] = strip_tags($new_instance['fb_link']);
+
+                        $instance['tw_link'] = strip_tags($new_instance['tw_link']);
+
+                        $instance['bh_link'] = strip_tags($new_instance['bh_link']);
+
+                        $instance['db_link'] = strip_tags($new_instance['db_link']);
+
+                        $instance['ln_link'] = strip_tags($new_instance['ln_link']);
+
+                        $instance['image_uri'] = strip_tags($new_instance['image_uri']);
+
+                        return $instance;
+
+                    }
+
+
+                    function form($instance)
+                    {
 
                         ?>
 
 
 
-                        <input type="text" class="widefat custom_media_url_team"
-                        name="<?php echo $this->get_field_name('image_uri'); ?>"
-                        id="<?php echo $this->get_field_id('image_uri'); ?>" value="<?php if( !empty($instance['image_uri']) ): echo $instance['image_uri']; endif; ?>"
-                        style="margin-top:5px;">
+                        <p>
 
+                            <label for="<?php echo $this->get_field_id('name'); ?>"><?php _e('Name', 'zerif-lite'); ?></label><br/>
 
-                        <input type="button" class="button button-primary custom_media_button_team" id="custom_media_button_clients"
-                        name="<?php echo $this->get_field_name('image_uri'); ?>" value="<?php _e('Upload Image','zerif-lite'); ?>"
-                        style="margin-top:5px;"/>
+                            <input type="text" name="<?php echo $this->get_field_name('name'); ?>"
+                            id="<?php echo $this->get_field_id('name'); ?>" value="<?php if( !empty($instance['name']) ): echo $instance['name']; endif; ?>"
+                            class="widefat"/>
 
-                    </p>
+                        </p>
 
 
 
-                    <?php
+                        <p>
+
+                            <label for="<?php echo $this->get_field_id('position'); ?>"><?php _e('Position', 'zerif-lite'); ?></label><br/>
+
+                            <textarea class="widefat" rows="8" cols="20" name="<?php echo $this->get_field_name('position'); ?>"
+                              id="<?php echo $this->get_field_id('position'); ?>"><?php
+                              if( !empty($instance['position']) ): echo htmlspecialchars_decode($instance['position']); endif;
+                              ?></textarea>
+
+                          </p>
+
+
+
+                          <p>
+
+                            <label
+                            for="<?php echo $this->get_field_id('description'); ?>"><?php _e('Description', 'zerif-lite'); ?></label><br/>
+
+                            <textarea class="widefat" rows="8" cols="20" name="<?php echo $this->get_field_name('description'); ?>"
+                              id="<?php echo $this->get_field_id('description'); ?>"><?php
+                              if( !empty($instance['description']) ): echo htmlspecialchars_decode($instance['description']); endif;
+                              ?></textarea>
+
+                          </p>
+
+
+
+                          <p>
+
+                            <label
+                            for="<?php echo $this->get_field_id('fb_link'); ?>"><?php _e('Facebook link', 'zerif-lite'); ?></label><br/>
+
+                            <input type="text" name="<?php echo $this->get_field_name('fb_link'); ?>"
+                            id="<?php echo $this->get_field_id('fb_link'); ?>" value="<?php if( !empty($instance['fb_link']) ): echo $instance['fb_link']; endif; ?>"
+                            class="widefat"/>
+
+                        </p>
+
+
+
+                        <p>
+
+                            <label
+                            for="<?php echo $this->get_field_id('tw_link'); ?>"><?php _e('Twitter link', 'zerif-lite'); ?></label><br/>
+
+                            <input type="text" name="<?php echo $this->get_field_name('tw_link'); ?>"
+                            id="<?php echo $this->get_field_id('tw_link'); ?>" value="<?php if( !empty($instance['tw_link']) ): echo $instance['tw_link']; endif; ?>"
+                            class="widefat"/>
+
+                        </p>
+
+
+
+                        <p>
+
+                            <label
+                            for="<?php echo $this->get_field_id('bh_link'); ?>"><?php _e('Behance link', 'zerif-lite'); ?></label><br/>
+
+                            <input type="text" name="<?php echo $this->get_field_name('bh_link'); ?>"
+                            id="<?php echo $this->get_field_id('bh_link'); ?>" value="<?php if( !empty($instance['bh_link']) ): echo $instance['bh_link']; endif; ?>"
+                            class="widefat"/>
+
+                        </p>
+
+
+
+                        <p>
+
+                            <label
+                            for="<?php echo $this->get_field_id('db_link'); ?>"><?php _e('Dribble link', 'zerif-lite'); ?></label><br/>
+
+                            <input type="text" name="<?php echo $this->get_field_name('db_link'); ?>"
+                            id="<?php echo $this->get_field_id('db_link'); ?>" value="<?php if( !empty($instance['db_link']) ): echo $instance['db_link']; endif; ?>"
+                            class="widefat"/>
+
+                        </p>
+
+                        <p>
+
+                            <label
+                            for="<?php echo $this->get_field_id('ln_link'); ?>"><?php _e('Linkedin link', 'zerif-lite'); ?></label><br/>
+
+                            <input type="text" name="<?php echo $this->get_field_name('ln_link'); ?>"
+                            id="<?php echo $this->get_field_id('ln_link'); ?>" value="<?php if( !empty($instance['ln_link']) ): echo $instance['ln_link']; endif; ?>"
+                            class="widefat"/>
+
+                        </p>
+
+                        <p>
+
+                            <label for="<?php echo $this->get_field_id('image_uri'); ?>"><?php _e('Image', 'zerif-lite'); ?></label><br/>
+
+
+
+                            <?php
+
+                            if ( !empty($instance['image_uri']) ) :
+
+                                echo '<img class="custom_media_image_team" src="' . $instance['image_uri'] . '" style="margin:0;padding:0;max-width:100px;float:left;display:inline-block" /><br />';
+
+                            endif;
+
+                            ?>
+
+
+
+                            <input type="text" class="widefat custom_media_url_team"
+                            name="<?php echo $this->get_field_name('image_uri'); ?>"
+                            id="<?php echo $this->get_field_id('image_uri'); ?>" value="<?php if( !empty($instance['image_uri']) ): echo $instance['image_uri']; endif; ?>"
+                            style="margin-top:5px;">
+
+
+                            <input type="button" class="button button-primary custom_media_button_team" id="custom_media_button_clients"
+                            name="<?php echo $this->get_field_name('image_uri'); ?>" value="<?php _e('Upload Image','zerif-lite'); ?>"
+                            style="margin-top:5px;"/>
+
+                        </p>
+
+
+
+                        <?php
+
+                    }
 
                 }
 
-            }
-
-            function zerif_customizer_custom_css()
-            {
+                function zerif_customizer_custom_css()
+                {
 
 
-                wp_register_style('zerif_customizer_custom_css', get_template_directory_uri() . '/css/zerif_customizer_custom_css.css');
+                    wp_register_style('zerif_customizer_custom_css', get_template_directory_uri() . '/css/zerif_customizer_custom_css.css');
 
-                wp_enqueue_style('zerif_customizer_custom_css');
-            }
+                    wp_enqueue_style('zerif_customizer_custom_css');
+                }
 
 
-            add_action('customize_controls_print_styles', 'zerif_customizer_custom_css');
+                add_action('customize_controls_print_styles', 'zerif_customizer_custom_css');
 
-            function zerif_excerpt_more( $more ) {
-             return '<a href="'.get_permalink().'">[...]</a>';
-         }
-         add_filter('excerpt_more', 'zerif_excerpt_more');
+                function zerif_excerpt_more( $more ) {
+                   return '<a href="'.get_permalink().'">[...]</a>';
+               }
+               add_filter('excerpt_more', 'zerif_excerpt_more');
 
-         /**************************/
-         /**** More themes *********/
-         /**************************/
+               /**************************/
+               /**** More themes *********/
+               /**************************/
 
 // If this file is called directly, abort.
-         if ( ! defined( 'WPINC' ) ) {
-             die;
-         }
+               if ( ! defined( 'WPINC' ) ) {
+                   die;
+               }
 
 // Add stylesheet and JS for upsell page.
-         function zerif_upsell_style() {
-             wp_enqueue_style( 'upsell-style', get_template_directory_uri() . '/css/upsell.css');
-         }
+               function zerif_upsell_style() {
+                   wp_enqueue_style( 'upsell-style', get_template_directory_uri() . '/css/upsell.css');
+               }
 
 // Add upsell page to the menu.
-         function zerif_lite_add_upsell() {
-             $page = add_theme_page(
-              __( 'More Themes', 'zerif-lite' ),
-              __( 'More Themes', 'zerif-lite' ),
-              'administrator',
-              'zerif-lite-themes',
-              'zerif_lite_display_upsell'
-              );
+               function zerif_lite_add_upsell() {
+                   $page = add_theme_page(
+                      __( 'More Themes', 'zerif-lite' ),
+                      __( 'More Themes', 'zerif-lite' ),
+                      'administrator',
+                      'zerif-lite-themes',
+                      'zerif_lite_display_upsell'
+                      );
 
-             add_action( 'admin_print_styles-' . $page, 'zerif_upsell_style' );
-         }
-         add_action( 'admin_menu', 'zerif_lite_add_upsell', 11 );
+                   add_action( 'admin_print_styles-' . $page, 'zerif_upsell_style' );
+               }
+               add_action( 'admin_menu', 'zerif_lite_add_upsell', 11 );
 
 // Define markup for the upsell page.
-         function zerif_lite_display_upsell() {
+               function zerif_lite_display_upsell() {
 
 	// Set template directory uri
-             $directory_uri = get_template_directory_uri();
-             ?>
-             <div class="wrap">
-              <div class="container-fluid">
-               <div id="upsell_container">
-                <div class="row">
-                 <div id="upsell_header" class="col-md-12">
-                  <h2>
-                   <a href="https://themeisle.com" target="_blank">
-                    <img src="<?php echo get_template_directory_uri(); ?>/images/logo-themeisle.png"/>
-                </a>
-            </h2>
+                   $directory_uri = get_template_directory_uri();
+                   ?>
+                   <div class="wrap">
+                      <div class="container-fluid">
+                         <div id="upsell_container">
+                            <div class="row">
+                               <div id="upsell_header" class="col-md-12">
+                                  <h2>
+                                     <a href="https://themeisle.com" target="_blank">
+                                        <img src="<?php echo get_template_directory_uri(); ?>/images/logo-themeisle.png"/>
+                                    </a>
+                                </h2>
 
-            <h3><?php _e( 'Simple and effective products, no complex frameworks, no drag & drop builders.', 'zerif-lite' ); ?></h3>
-        </div>
-    </div>
+                                <h3><?php _e( 'Simple and effective products, no complex frameworks, no drag & drop builders.', 'zerif-lite' ); ?></h3>
+                            </div>
+                        </div>
 
-    <div id="upsell_themes" class="row">
-     <?php
+                        <div id="upsell_themes" class="row">
+                           <?php
 					// Set the argument array with author name.
-     $args = array(
-      'author' => 'codeinwp',
-      );
+                           $args = array(
+                              'author' => 'codeinwp',
+                              );
 
 					// Set the $request array.
-     $request = array(
-      'body' => array(
-       'action'  => 'query_themes',
-       'request' => serialize( (object)$args )
-       )
-      );
-     $themes = zerif_get_themes( $request );
-     $active_theme = wp_get_theme()->get( 'Name' );
-     $counter = 1;
+                           $request = array(
+                              'body' => array(
+                                 'action'  => 'query_themes',
+                                 'request' => serialize( (object)$args )
+                                 )
+                              );
+                           $themes = zerif_get_themes( $request );
+                           $active_theme = wp_get_theme()->get( 'Name' );
+                           $counter = 1;
 
 					// For currently active theme.
-     foreach ( $themes->themes as $theme ) {
-      if( $active_theme == $theme->name ) {?>
+                           foreach ( $themes->themes as $theme ) {
+                              if( $active_theme == $theme->name ) {?>
 
-      <div id="<?php echo $theme->slug; ?>" class="theme-container col-md-6 col-lg-4">
-        <div class="image-container">
-         <img class="theme-screenshot" src="<?php echo $theme->screenshot_url ?>"/>
+                              <div id="<?php echo $theme->slug; ?>" class="theme-container col-md-6 col-lg-4">
+                                <div class="image-container">
+                                   <img class="theme-screenshot" src="<?php echo $theme->screenshot_url ?>"/>
 
-         <div class="theme-description">
-          <p><?php echo $theme->description; ?></p>
-      </div>
-  </div>
-  <div class="theme-details active">
-     <span class="theme-name"><?php echo $theme->name . ':' . __( 'Current theme', 'zerif-lite' ); ?></span>
-     <a class="button button-secondary customize right" target="_blank" href="<?php echo get_site_url(). '/wp-admin/customize.php' ?>">Customize</a>
- </div>
-</div>
+                                   <div class="theme-description">
+                                      <p><?php echo $theme->description; ?></p>
+                                  </div>
+                              </div>
+                              <div class="theme-details active">
+                               <span class="theme-name"><?php echo $theme->name . ':' . __( 'Current theme', 'zerif-lite' ); ?></span>
+                               <a class="button button-secondary customize right" target="_blank" href="<?php echo get_site_url(). '/wp-admin/customize.php' ?>">Customize</a>
+                           </div>
+                       </div>
 
-<?php
-$counter++;
-break;
-}
-}
+                       <?php
+                       $counter++;
+                       break;
+                   }
+               }
 
 					// For all other themes.
-foreach ( $themes->themes as $theme ) {
-  if( $active_theme != $theme->name ) {
+               foreach ( $themes->themes as $theme ) {
+                  if( $active_theme != $theme->name ) {
 
 							// Set the argument array with author name.
-   $args = array(
-    'slug' => $theme->slug,
-    );
+                     $args = array(
+                        'slug' => $theme->slug,
+                        );
 
 							// Set the $request array.
-   $request = array(
-    'body' => array(
-     'action'  => 'theme_information',
-     'request' => serialize( (object)$args )
-     )
-    );
+                     $request = array(
+                        'body' => array(
+                           'action'  => 'theme_information',
+                           'request' => serialize( (object)$args )
+                           )
+                        );
 
-   $theme_details = zerif_get_themes( $request );
-   ?>
+                     $theme_details = zerif_get_themes( $request );
+                     ?>
 
-   <div id="<?php echo $theme->slug; ?>" class="theme-container col-md-6 col-lg-4 <?php echo $counter % 3 == 1 ? 'no-left-megin' : ""; ?>">
-    <div class="image-container">
-     <img class="theme-screenshot" src="<?php echo $theme->screenshot_url ?>"/>
+                     <div id="<?php echo $theme->slug; ?>" class="theme-container col-md-6 col-lg-4 <?php echo $counter % 3 == 1 ? 'no-left-megin' : ""; ?>">
+                        <div class="image-container">
+                           <img class="theme-screenshot" src="<?php echo $theme->screenshot_url ?>"/>
 
-     <div class="theme-description">
-      <p><?php echo $theme->description; ?></p>
-  </div>
-</div>
-<div class="theme-details">
- <span class="theme-name"><?php echo $theme->name; ?></span>
+                           <div class="theme-description">
+                              <p><?php echo $theme->description; ?></p>
+                          </div>
+                      </div>
+                      <div class="theme-details">
+                       <span class="theme-name"><?php echo $theme->name; ?></span>
 
- <!-- Check if the theme is installed -->
- <?php if( wp_get_theme( $theme->slug )->exists() ) { ?>
+                       <!-- Check if the theme is installed -->
+                       <?php if( wp_get_theme( $theme->slug )->exists() ) { ?>
 
- <!-- Show the tick image notifying the theme is already installed. -->
- <img data-toggle="tooltip" title="<?php _e( 'Already installed', 'zerif-lite' ); ?>" data-placement="bottom" class="theme-exists" src="<?php echo $directory_uri ?>/core/images/tick.png"/>
+                       <!-- Show the tick image notifying the theme is already installed. -->
+                       <img data-toggle="tooltip" title="<?php _e( 'Already installed', 'zerif-lite' ); ?>" data-placement="bottom" class="theme-exists" src="<?php echo $directory_uri ?>/core/images/tick.png"/>
 
- <!-- Activate Button -->
- <a  class="button button-primary activate right"
- href="<?php echo wp_nonce_url( admin_url( 'themes.php?action=activate&amp;stylesheet=' . urlencode( $theme->slug ) ), 'switch-theme_' . $theme->slug );?>" >Activate</a>
- <?php }
- else {
+                       <!-- Activate Button -->
+                       <a  class="button button-primary activate right"
+                       href="<?php echo wp_nonce_url( admin_url( 'themes.php?action=activate&amp;stylesheet=' . urlencode( $theme->slug ) ), 'switch-theme_' . $theme->slug );?>" >Activate</a>
+                       <?php }
+                       else {
 
 										// Set the install url for the theme.
-  $install_url = add_query_arg( array(
-    'action' => 'install-theme',
-    'theme'  => $theme->slug,
-    ), self_admin_url( 'update.php' ) );
-    ?>
-    <!-- Install Button -->
-    <a data-toggle="tooltip" data-placement="bottom" title="<?php echo 'Downloaded ' . number_format( $theme_details->downloaded ) . ' times'; ?>" class="button button-primary install right" href="<?php echo esc_url( wp_nonce_url( $install_url, 'install-theme_' . $theme->slug ) ); ?>" ><?php _e( 'Install Now', 'zerif-lite' ); ?></a>
-    <?php } ?>
+                          $install_url = add_query_arg( array(
+                            'action' => 'install-theme',
+                            'theme'  => $theme->slug,
+                            ), self_admin_url( 'update.php' ) );
+                            ?>
+                            <!-- Install Button -->
+                            <a data-toggle="tooltip" data-placement="bottom" title="<?php echo 'Downloaded ' . number_format( $theme_details->downloaded ) . ' times'; ?>" class="button button-primary install right" href="<?php echo esc_url( wp_nonce_url( $install_url, 'install-theme_' . $theme->slug ) ); ?>" ><?php _e( 'Install Now', 'zerif-lite' ); ?></a>
+                            <?php } ?>
 
-    <!-- Preview button -->
-    <a class="button button-secondary preview right" target="_blank" href="<?php echo $theme->preview_url; ?>"><?php _e( 'Live Preview', 'zerif-lite' ); ?></a>
-</div>
-</div>
-<?php
-$counter++;
-}
-}?>
-</div>
-</div>
+                            <!-- Preview button -->
+                            <a class="button button-secondary preview right" target="_blank" href="<?php echo $theme->preview_url; ?>"><?php _e( 'Live Preview', 'zerif-lite' ); ?></a>
+                        </div>
+                    </div>
+                    <?php
+                    $counter++;
+                }
+            }?>
+        </div>
+    </div>
 </div>
 </div>
 
 <script>
   jQuery(function () {
-   jQuery('.download').tooltip();
-   jQuery('.theme-exists').tooltip();
-});
+     jQuery('.download').tooltip();
+     jQuery('.theme-exists').tooltip();
+ });
 </script>
 <?php
 }
