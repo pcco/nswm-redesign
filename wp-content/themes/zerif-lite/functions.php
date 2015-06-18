@@ -441,8 +441,8 @@ function my_new_field_display( $field_id, $data, $form_id  ){
       );
 
     if($form_id==13){
-        if(isset($_COOKIE["user_email"])) {
-            $user_email=$_COOKIE["user_email"];
+        if(isset($_COOKIE["nswm_user_email"])) {
+            $user_email=$_COOKIE["nswm_user_email"];
             //echo $user_email;
             $args = array(
               'form_id'   => 6,
@@ -503,14 +503,14 @@ function my_new_field_display( $field_id, $data, $form_id  ){
         $provider_field_subs=$sub->get_field( $provider_field_id );
         if($provider_field_subs!=null){
             // echo 'sub ok';
-        if(!$provider_can_drive){
+        if(!$provider_can_drive&&$field_id!=75){
              // echo 'drive not ok';
           foreach ($provider_field_subs as $provider_field_sub_value) {
         //echo($provider_field_sub_value);
             array_push($non_drivers,$provider_field_sub_value);
             }
         }
-        elseif(!$provider_is_coworker){
+        elseif(!$provider_is_coworker&&$field_id!=75){
             // echo 'coworker not ok';
           foreach ($provider_field_subs as $provider_field_sub_value) {
             //echo($provider_field_sub_value);
@@ -747,6 +747,7 @@ function date_list_field_display( $field_id, $data, $form_id  ){
     }else{
         $selected_value = '';
     }
+    $display_style="width:150px;"
     //echo $selected_value[0];
     ?>
     <input type="hidden" id="ninja_forms_field_<?php echo $field_id;?>" name="ninja_forms_field_<?php echo $field_id;?>" value="">
@@ -858,8 +859,8 @@ add_action( 'init', 'ninja_forms_register_delete_existing' );
 function ninja_forms_delete_existing(){
   global $ninja_forms_processing;
   $form_id=$ninja_forms_processing->get_form_ID();
-  if(isset($_COOKIE["user_email"])) {
-    $user_email=$_COOKIE["user_email"];
+  if(isset($_COOKIE["nswm_user_email"])) {
+    $user_email=$_COOKIE["nswm_user_email"];
     if($form_id==13){
             //echo $user_email;
         $args = array(
@@ -916,7 +917,7 @@ function ninja_forms_setcookie(){
   if($form_id==6){
     $user_value = $ninja_forms_processing->get_field_value( 15 );
     setcookie(
-      "user_email",
+      "nswm_user_email",
       $user_value,
       //time() + (10 * 365 * 24 * 60 * 60),
       0,
@@ -926,7 +927,7 @@ function ninja_forms_setcookie(){
     elseif($form_id==9){
         $user_value = $ninja_forms_processing->get_field_value( 55 );
     setcookie(
-      "user_email",
+      "nswm_user_email",
       $user_value,
       //time() + (10 * 365 * 24 * 60 * 60),
       0,
@@ -946,9 +947,10 @@ function ninja_forms_getvalues(){
 
   $form_id= $ninja_forms_loading->get_form_ID();
   //echo $form_id;
+
   if($form_id==6){
-        if(isset($_COOKIE["user_email"])) {
-            $user_email=$_COOKIE["user_email"];
+        if(isset($_COOKIE["nswm_user_email"])) {
+            $user_email=$_COOKIE["nswm_user_email"];
             //echo $user_email;
             $args = array(
               'form_id'   => $form_id,
@@ -973,8 +975,8 @@ function ninja_forms_getvalues(){
         }
     }
     elseif($form_id==9){
-        if(isset($_COOKIE["user_email"])) {
-            $user_email=$_COOKIE["user_email"];
+        if(isset($_COOKIE["nswm_user_email"])) {
+            $user_email=$_COOKIE["nswm_user_email"];
             //echo $user_email;
             $args = array(
               'form_id'   => $form_id,
@@ -999,8 +1001,10 @@ function ninja_forms_getvalues(){
         }
     }
     elseif($form_id==13){
-        if(isset($_COOKIE["user_email"])) {
-            $user_email=$_COOKIE["user_email"];
+
+        if(isset($_COOKIE["nswm_user_email"])) {
+
+            $user_email=$_COOKIE["nswm_user_email"];
             $args = array(
               'form_id'   => $form_id,
               'fields'    => array(
@@ -1008,20 +1012,18 @@ function ninja_forms_getvalues(){
                 ),
               );
             $subs = Ninja_Forms()->subs()->get( $args );
+
             if(count($subs)>0)
             {
                 $value=$subs[0];
-            }
-            else{
-                return;
-            }
             $all_fields = $value->get_all_fields();
             foreach ($all_fields as $field_id => $user_value) {
                $ninja_forms_loading->update_field_value( $field_id,  $user_value );
 
             }
+            }
+            
 
-            //echo $user_email;
             $args = array(
               'form_id'   => 6,
               'fields'    => array(
@@ -1032,10 +1034,15 @@ function ninja_forms_getvalues(){
             if(count($subs)>0)
             {
                 $value=$subs[0];
-                $ninja_forms_loading->update_field_value( 78,  $user_email );
+                $ninja_forms_loading->update_field_value( 78,$user_email);
             }
             else{
-                return;
+                $ninja_forms_loading->update_field_settings(72, 'field_class','hide') ;
+              $ninja_forms_loading->update_field_settings(73, 'field_class','hide') ;
+               $ninja_forms_loading->update_field_settings(74, 'field_class','hide') ;
+                $ninja_forms_loading->update_field_settings(75, 'field_class','hide') ;
+             $ninja_forms_loading->update_field_settings(76, 'field_class','hide') ;
+             return;
             }
             $needs = $value->get_field(17);
             // foreach ($needs as $value) {
