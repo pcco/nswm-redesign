@@ -460,6 +460,8 @@ function my_new_field_display( $field_id, $data, $form_id  ){
             // echo 'customer_degree:'.$customer_degree;
             }
             
+        }else{
+            return;
         }
     }
     $provider_subs = Ninja_Forms()->subs()->get( $provider_args );
@@ -783,6 +785,16 @@ function ninja_forms_setcookie(){
       "/"
       );
     }
+    elseif($form_id==9){
+        $user_value = $ninja_forms_processing->get_field_value( 55 );
+    setcookie(
+      "user_email",
+      $user_value,
+      //time() + (10 * 365 * 24 * 60 * 60),
+      0,
+      "/"
+      );
+    }
 }
 
 function ninja_register_forms_getvalues(){
@@ -872,28 +884,46 @@ function ninja_forms_getvalues(){
                 
             //     echo $value;
             // }
+            $hasAvailibility=false;
             if($needs!=null){
                 if (!in_array("接机", $needs)){
                     $setting=$ninja_forms_loading->get_field_settings(72); 
                     $ninja_forms_loading->update_field_settings(72, 'field_class','hide') ;
+                }else{
+                    $hasAvailibility=true;
                 }
                 if (!in_array("买菜", $needs)){
                     $setting=$ninja_forms_loading->get_field_settings(73); 
                     $ninja_forms_loading->update_field_settings(73, 'field_class','hide') ;
+                }else{
+                    $hasAvailibility=true;
                 }
                 if (!in_array("购置家具", $needs)){
                     $setting=$ninja_forms_loading->get_field_settings(74); 
                     $ninja_forms_loading->update_field_settings(74, 'field_class','hide') ;
+                }else{
+                    $hasAvailibility=true;
                 }
                 if (!in_array("临时住宿", $needs)){
                     $setting=$ninja_forms_loading->get_field_settings(75); 
                     $ninja_forms_loading->update_field_settings(75, 'field_class','hide') ;
+                }else{
+                    $hasAvailibility=true;
                 }
             }else{
                 header("Location: http://nswm.pccoakland.org/"); /* Redirect browser */
                 exit();
             }
+            if(!$hasAvailibility){
+                 $ninja_forms_loading->update_field_settings(76, 'field_class','hide') ;
+            }
 
+        }else{
+             $ninja_forms_loading->update_field_settings(72, 'field_class','hide') ;
+              $ninja_forms_loading->update_field_settings(73, 'field_class','hide') ;
+               $ninja_forms_loading->update_field_settings(74, 'field_class','hide') ;
+                $ninja_forms_loading->update_field_settings(75, 'field_class','hide') ;
+             $ninja_forms_loading->update_field_settings(76, 'field_class','hide') ;
         }
     }
 }
