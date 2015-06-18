@@ -559,9 +559,30 @@ foreach ($customer_subs as $sub) {
 
 }
 $results=array_unique($results);
+if($field_id!=75){
+    if( isset( $data['default_value'] ) AND !empty( $data['default_value'] ) ){
+        $selected_value = $data['default_value'];
+        array_push($results,$selected_value);
+    }else{
+        $selected_value = '';
+    }
+}else{
+    if( isset( $data['default_value'] ) AND !empty( $data['default_value'] ) AND is_array( $data['default_value'] ) ){
+         $selected_values=$data['default_value'];
+        foreach ( $data['default_value'] as $selected_value) {
+            array_push($results,$selected_value);
+        }
+        
+    }else{
+        $selected_values = array();
+    }
+}
+
 sort($results);
 $hideclass=count($results)>0?'':'hide';
 
+ 
+if($field_id!=75){
 ?>
 <select name="ninja_forms_field_<?php echo $field_id;?>" id="ninja_forms_field_<?php echo $field_id;?>" class="ninja-forms-field <?php echo count($results)>0?'':'hide';?>" rel="<?php echo $field_id;?>" <?php echo $required;?>>
 <option value="" disabled  selected>Please Select</option>
@@ -583,8 +604,14 @@ $hideclass=count($results)>0?'':'hide';
   // Echoes out the submitted value for a field
   // $field_sub=$sub->get_field( $ds_field_id );
 foreach ($results as $result) {
+    if($selected_value==$result){
+                        $selected = 'selected';
+                    }else{
+                        $selected = '';
+                    }
  ?>
- <option value="<?php echo $result;?>"><?php echo $result;?></option>
+
+ <option value="<?php echo $result;?>"  <?php echo $selected;?>><?php echo $result;?></option>
 
  <?php
 }
@@ -592,7 +619,66 @@ foreach ($results as $result) {
 // }
 ?>
 </select><span class="<?php echo count($results)>0?'':'hide';?>">还剩<?php echo count($results);?>个帮助时间可以预约</span>
+<?php
+}else{
+    ?>
+    <select name="ninja_forms_field_<?php echo $field_id;?>[]" id="ninja_forms_field_<?php echo $field_id;?>" class="ninja-forms-field <?php echo count($results)>0?'':'hide';?>" multiple size="7" rel="<?php echo $field_id;?>" >
+                
+                    <option value="" disabled>我们最多可以提供7天的短期住宿，请选择您需要住宿的日期</option>
+                    <?php
+                foreach($results as $result){
+                    $label = $result;
 
+                    $label = htmlspecialchars( $label, ENT_QUOTES );
+
+                    $label = stripslashes($label);
+
+                    $value = $label;
+
+                    if(is_array($selected_values) AND in_array($value, $selected_values)){
+                        $selected = 'selected';
+                    }else{
+                        $selected = '';
+                    }
+
+                    
+                    ?>
+                    <option value="<?php echo $value;?>" <?php echo $selected;?>><?php echo $label;?></option>
+                    <?php
+                }
+                ?>
+            </select>
+            <select id="ninja_forms_field_<?php echo $field_id;?>_clone" style="display:none;" rel="<?php echo $field_id;?>" >
+                <?php
+                $x = 0;
+                foreach($options as $option){
+
+                    
+                    $label=$result;
+
+                    $label = htmlspecialchars( $label, ENT_QUOTES );
+
+                    $label = stripslashes($label);
+
+                    $value = $label;
+
+                    if(is_array($selected_values) AND in_array($value, $selected_values)){
+                        $selected = 'selected';
+                    }else{
+                        $selected = '';
+                    }
+
+                    
+                    ?>
+                    <option value="<?php echo $value;?>" title="<?php echo $x;?>" <?php echo $selected;?>><?php echo $label;?></option>
+                    <?php
+                    $x++;
+                }
+                ?>
+            </select>
+    <?php
+}
+?>
   <p class="<?php echo count($results)<=0?'':'hide';?>">抱歉，我们可以提供帮助的时间都被抢完了。T_T</p>
 
  <?php
@@ -670,7 +756,59 @@ function date_list_field_display( $field_id, $data, $form_id  ){
             $x = 0;
             do {
                 $value=$startDate->format("m/d");
-                
+                if($field_id==60){
+                    $value1=$value.' Morning';
+                    $value2=$value.' Afternoon';
+                    $value3=$value.' Night';
+                     if( is_array( $selected_value ) AND in_array($value1, $selected_value) ){
+
+                    $checked = 'checked';
+                }else if($selected_value == $value1){
+                    $checked = 'checked';
+                }else{
+                    $checked = '';
+                }
+   //echo $startDate->format("m/d") , PHP_EOL;
+                ?><li>
+                <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options" style="<?php echo $display_style;?>">
+                    <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value1;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
+                    <?php echo $value1;?>
+                </label>
+            </li>
+            <?php
+             if( is_array( $selected_value ) AND in_array($value2, $selected_value) ){
+
+                    $checked = 'checked';
+                }else if($selected_value == $value2){
+                    $checked = 'checked';
+                }else{
+                    $checked = '';
+                }
+   //echo $startDate->format("m/d") , PHP_EOL;
+                ?><li>
+                <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options" style="<?php echo $display_style;?>">
+                    <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value2;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
+                    <?php echo $value2;?>
+                </label>
+            </li>
+            <?php
+             if( is_array( $selected_value ) AND in_array($value3, $selected_value) ){
+
+                    $checked = 'checked';
+                }else if($selected_value == $value3){
+                    $checked = 'checked';
+                }else{
+                    $checked = '';
+                }
+   //echo $startDate->format("m/d") , PHP_EOL;
+                ?><li>
+                <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options" style="<?php echo $display_style;?>">
+                    <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value3;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
+                    <?php echo $value3;?>
+                </label>
+            </li>
+            <?php
+                }else{
 
                 if( is_array( $selected_value ) AND in_array($value, $selected_value) ){
 
@@ -688,7 +826,7 @@ function date_list_field_display( $field_id, $data, $form_id  ){
                 </label>
             </li>
             <?php
-            
+            }
             $x++;
             $startDate->modify("+1 day");
         } while ($startDate <= $endDate);
@@ -863,6 +1001,26 @@ function ninja_forms_getvalues(){
     elseif($form_id==13){
         if(isset($_COOKIE["user_email"])) {
             $user_email=$_COOKIE["user_email"];
+            $args = array(
+              'form_id'   => $form_id,
+              'fields'    => array(
+                '78'      => $user_email,
+                ),
+              );
+            $subs = Ninja_Forms()->subs()->get( $args );
+            if(count($subs)>0)
+            {
+                $value=$subs[0];
+            }
+            else{
+                return;
+            }
+            $all_fields = $value->get_all_fields();
+            foreach ($all_fields as $field_id => $user_value) {
+               $ninja_forms_loading->update_field_value( $field_id,  $user_value );
+
+            }
+
             //echo $user_email;
             $args = array(
               'form_id'   => 6,
@@ -911,8 +1069,11 @@ function ninja_forms_getvalues(){
                     $hasAvailibility=true;
                 }
             }else{
-                header("Location: http://nswm.pccoakland.org/"); /* Redirect browser */
-                exit();
+                 $ninja_forms_loading->update_field_settings(72, 'field_class','hide') ;
+              $ninja_forms_loading->update_field_settings(73, 'field_class','hide') ;
+               $ninja_forms_loading->update_field_settings(74, 'field_class','hide') ;
+                $ninja_forms_loading->update_field_settings(75, 'field_class','hide') ;
+             $ninja_forms_loading->update_field_settings(76, 'field_class','hide') ;
             }
             if(!$hasAvailibility){
                  $ninja_forms_loading->update_field_settings(76, 'field_class','hide') ;
