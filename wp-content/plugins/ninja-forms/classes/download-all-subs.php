@@ -76,6 +76,7 @@ class NF_Download_All_Subs extends NF_Step_Processing {
 				}
 				$x++;
 			}
+			fprintf($myfile, chr(0xEF).chr(0xBB).chr(0xBF));
 			fwrite( $myfile, $export );
 			fclose( $myfile );
 		}
