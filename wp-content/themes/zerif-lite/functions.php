@@ -474,7 +474,7 @@ function my_new_field_display( $field_id, $data, $form_id  ){
 
     $results = array();
     $non_drivers=array();
-    $non_coworders=array();
+    $non_coworkers=array();
 // echo count($provider_subs);
 // echo count($customer_subs);
     foreach ( $provider_subs as $sub ) {
@@ -513,20 +513,20 @@ function my_new_field_display( $field_id, $data, $form_id  ){
         $provider_field_subs=$sub->get_field( $provider_field_id );
         if($provider_field_subs!=null){
              //echo 'sub ok';
-        if(!$provider_can_drive&&$field_id!=75){
+        if(!$provider_can_drive&&$provider_is_coworker&&$field_id!=75){
               //echo 'drive not ok';
           foreach ($provider_field_subs as $provider_field_sub_value) {
         //echo($provider_field_sub_value);
             array_push($non_drivers,$provider_field_sub_value);
             }
         }
-        elseif(!$provider_is_coworker&&$field_id!=75){
+        elseif(!$provider_is_coworker&&$provider_can_drive&&$field_id!=75){
             // echo 'coworker not ok';
           foreach ($provider_field_subs as $provider_field_sub_value) {
             //echo($provider_field_sub_value);
-            array_push($non_coworders,$provider_field_sub_value);
+            array_push($non_coworkers,$provider_field_sub_value);
             }
-        }else{
+        }elseif($provider_is_coworker&&$provider_can_drive){
             //  echo 'all ok';
              foreach ($provider_field_subs as $provider_field_sub_value) {
                     //echo($provider_field_sub_value);
@@ -536,7 +536,7 @@ function my_new_field_display( $field_id, $data, $form_id  ){
         }
         }
     }
-    foreach (array_intersect($non_drivers,$non_coworders) as $value) {
+    foreach (array_intersect($non_drivers,$non_coworkers) as $value) {
         //echo $value;
         array_push($results,$value);
         // echo $value;
@@ -752,8 +752,8 @@ function date_list_field_display( $field_id, $data, $form_id  ){
 
     $startDate = new DateTime($data['date_from']);
     date_default_timezone_set('America/New_York');
-$date = date('m/d/Y h:i:s a', time());
-$startDate= $startDate<$date?$date:$startDate;
+    $date = date('m/d/Y h:i:s a', time());
+    $startDate= $startDate<$date?$date:$startDate;
     $endDate = new DateTime($data['date_to']);
     if( isset( $data['default_value'] ) AND !empty( $data['default_value'] ) ){
         $selected_value = $data['default_value'];
@@ -790,7 +790,7 @@ $startDate= $startDate<$date?$date:$startDate;
                         $cust_subs = Ninja_Forms()->subs()->get( $args );
                         $args = array(
                           'form_id'   => 9
-                        );
+                          );
                         $provider_subs = Ninja_Forms()->subs()->get( $args );
                         $provider_subs_count=0;
                         foreach ($provider_subs as $sub) {
@@ -807,124 +807,124 @@ $startDate= $startDate<$date?$date:$startDate;
                         }
            //echo $startDate->format("m/d") , PHP_EOL;
                         ?><li>
-                            <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options <?php echo $fulfilled;?> " style="<?php echo $display_style;?>">
-                                <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $each_value;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
-                                <?php echo $each_value;?>
-                            </label>
-                        </li>
-                        <?php
-                    }
-                     
+                        <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options <?php echo $fulfilled;?> " style="<?php echo $display_style;?>">
+                            <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $each_value;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
+                            <?php echo $each_value;?>
+                        </label>
+                    </li>
+                    <?php
+                }
+
+            }else{
+
+                if( is_array( $selected_value ) AND in_array($value, $selected_value) ){
+
+                    $checked = 'checked';
+                }else if($selected_value == $value){
+                    $checked = 'checked';
                 }else{
-
-                    if( is_array( $selected_value ) AND in_array($value, $selected_value) ){
-
-                        $checked = 'checked';
-                    }else if($selected_value == $value){
-                        $checked = 'checked';
-                    }else{
-                        $checked = '';
-                    }
-                    if($field_id==58){
-                        $args = array(
-                          'form_id'   => 13,
-                          'fields'    => array(
-                            '73'      => $value,
-                            ),
-                          );
-                        $cust_subs = Ninja_Forms()->subs()->get( $args );
-                        $args = array(
-                          'form_id'   => 9
-                        );
-                        $provider_subs = Ninja_Forms()->subs()->get( $args );
-                        $provider_subs_count=0;
-                        foreach ($provider_subs as $sub) {
-                            $field_value=$sub->get_field(58);
-                            if($field_value!=null){
+                    $checked = '';
+                }
+                if($field_id==58){
+                    $args = array(
+                      'form_id'   => 13,
+                      'fields'    => array(
+                        '73'      => $value,
+                        ),
+                      );
+                    $cust_subs = Ninja_Forms()->subs()->get( $args );
+                    $args = array(
+                      'form_id'   => 9
+                      );
+                    $provider_subs = Ninja_Forms()->subs()->get( $args );
+                    $provider_subs_count=0;
+                    foreach ($provider_subs as $sub) {
+                        $field_value=$sub->get_field(58);
+                        if($field_value!=null){
                                 //echo $value.'=='.$field_value.'<br>';
-                                if(in_array($value,$field_value))$provider_subs_count++;
-                            }
+                            if(in_array($value,$field_value))$provider_subs_count++;
                         }
-                       
-                        if($cust_subs!=null&&$cust_subs[0]->get_field(73)!='') {
-                            $fulfilled=$provider_subs_count>count($cust_subs)?'fulfilled':'needed';
-                        }else{
-                            $fulfilled=$provider_subs_count>0?'fulfilled':'needed';
-                        }
-                    }elseif($field_id==59){
-                        $args = array(
-                          'form_id'   => 13,
-                          'fields'    => array(
-                            '74'      => $value,
-                            ),
-                          );
-                        $cust_subs = Ninja_Forms()->subs()->get( $args );
-                        $args = array(
-                          'form_id'   => 9
-                        );
-                        $provider_subs = Ninja_Forms()->subs()->get( $args );
-                        $provider_subs_count=0;
-                        foreach ($provider_subs as $sub) {
-                            $field_value=$sub->get_field(59);
-                            if($field_value!=null){
-                                if(in_array($value,$field_value))$provider_subs_count++;
-                            }
-                        }
-                        
-                        if($cust_subs!=null&&$cust_subs[0]->get_field(74)!='') {
-                            $fulfilled=$provider_subs_count>count($cust_subs)?'fulfilled':'needed';
-                        }else{
-                            $fulfilled=$provider_subs_count>0?'fulfilled':'needed';
-                        }
-                    }elseif($field_id==61){
-                        $args = array(
-                          'form_id'   => 13
-                          );
-                        $cust_subs = Ninja_Forms()->subs()->get( $args );
-                        $cust_subs_count=0;
-                        foreach ($cust_subs as $sub) {
-                            $field_value=$sub->get_field(75);
-                            if($field_value!=null){
-                                if(in_array($value,$field_value))$cust_subs_count++;
-                            }
-                        }
-                        $args = array(
-                          'form_id'   => 9
-                        );
-                        $provider_subs = Ninja_Forms()->subs()->get( $args );
-                        $provider_subs_count=0;
-                        foreach ($provider_subs as $sub) {
-                            $field_value=$sub->get_field(61);
-                            if($field_value!=null){
-                                if(in_array($value,$field_value))$provider_subs_count++;
-                            }
-                        }
-                        
-                        $fulfilled=$provider_subs_count>$cust_subs_count?'fulfilled':'needed';
-                    }else{
-                        $fulfilled='';
                     }
+
+                    if($cust_subs!=null&&$cust_subs[0]->get_field(73)!='') {
+                        $fulfilled=$provider_subs_count>count($cust_subs)?'fulfilled':'needed';
+                    }else{
+                        $fulfilled=$provider_subs_count>0?'fulfilled':'needed';
+                    }
+                }elseif($field_id==59){
+                    $args = array(
+                      'form_id'   => 13,
+                      'fields'    => array(
+                        '74'      => $value,
+                        ),
+                      );
+                    $cust_subs = Ninja_Forms()->subs()->get( $args );
+                    $args = array(
+                      'form_id'   => 9
+                      );
+                    $provider_subs = Ninja_Forms()->subs()->get( $args );
+                    $provider_subs_count=0;
+                    foreach ($provider_subs as $sub) {
+                        $field_value=$sub->get_field(59);
+                        if($field_value!=null){
+                            if(in_array($value,$field_value))$provider_subs_count++;
+                        }
+                    }
+
+                    if($cust_subs!=null&&$cust_subs[0]->get_field(74)!='') {
+                        $fulfilled=$provider_subs_count>count($cust_subs)?'fulfilled':'needed';
+                    }else{
+                        $fulfilled=$provider_subs_count>0?'fulfilled':'needed';
+                    }
+                }elseif($field_id==61){
+                    $args = array(
+                      'form_id'   => 13
+                      );
+                    $cust_subs = Ninja_Forms()->subs()->get( $args );
+                    $cust_subs_count=0;
+                    foreach ($cust_subs as $sub) {
+                        $field_value=$sub->get_field(75);
+                        if($field_value!=null){
+                            if(in_array($value,$field_value))$cust_subs_count++;
+                        }
+                    }
+                    $args = array(
+                      'form_id'   => 9
+                      );
+                    $provider_subs = Ninja_Forms()->subs()->get( $args );
+                    $provider_subs_count=0;
+                    foreach ($provider_subs as $sub) {
+                        $field_value=$sub->get_field(61);
+                        if($field_value!=null){
+                            if(in_array($value,$field_value))$provider_subs_count++;
+                        }
+                    }
+
+                    $fulfilled=$provider_subs_count>$cust_subs_count?'fulfilled':'needed';
+                }else{
+                    $fulfilled='';
+                }
 
        //echo $startDate->format("m/d") , PHP_EOL;
-                    ?><li>
-                    <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options <?php echo $fulfilled;?>" style="<?php echo $display_style;?>">
-                        <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
-                        <?php echo $value;?>
-                    </label>
-                    </li>
-                <?php
-                }
-            $x++;
-            $startDate->modify("+1 day");
-        } while ($startDate <= $endDate);
+                ?><li>
+                <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options <?php echo $fulfilled;?>" style="<?php echo $display_style;?>">
+                    <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
+                    <?php echo $value;?>
+                </label>
+            </li>
+            <?php
+        }
+        $x++;
+        $startDate->modify("+1 day");
+    } while ($startDate <= $endDate);
 
 
 
 
-        ?></ul>
-    </span>
+    ?></ul>
+</span>
 
-    <?php
+<?php
 
 
 
@@ -1185,6 +1185,279 @@ function ninja_forms_getvalues(){
         }
     }
 }
+}
+function register_waiting_student_list_field(){
+    $args = array(
+        'name' => 'Waiting Student List Field', 
+        'edit_options' => array(
+            array(
+                'type' => 'text',
+                'name' => 'appointment_field_id',
+                'label' => 'Appointment Field ID', 
+                'class' => 'widefat',
+                ),
+            array(
+                'type' => 'text',
+                'name' => 'provider_field_id',
+                'label' => 'Provider Field ID', 
+                'class' => 'widefat',
+                ),
+        ),
+        'display_function' => 'waiting_student_list_field_display',
+        'edit_function' => 'waiting_student_list_field_edit',
+        'sidebar' => 'template_fields',
+        );
+
+    if( function_exists( 'ninja_forms_register_field' ) ) {
+       ninja_forms_register_field('waiting_student_list_field', $args);
+   }
+}
+add_action( 'init', 'register_waiting_student_list_field' );
+/*
+ * This function outputs HTML for the backend editor.
+ * The naming convention is: ninja_forms_field_4[custom_value].
+ * It will be available as $data[custom_value].
+ *  
+ * $field_id is the id of the field currently being edited.
+ * $data is an array of the field data, including any custom variables.
+ *
+*/
+function waiting_student_list_field_edit( $field_id, $data ){
+
+}
+
+/*
+ * This function only has to output the specific field element. The wrap is output automatically.
+ *
+ * $field_id is the id of the field currently being displayed.
+ * $data is an array the possibly modified field data for the current field.
+ *
+*/
+function waiting_student_list_field_display( $field_id, $data, $form_id  ){
+    $appointment_field_id=$data["appointment_field_id"];
+    $provider_field_id=$data["provider_field_id"];
+    $assignment_field_id=$field_id;
+    ?>
+        <select name="ninja_forms_field_<?php echo $field_id;?>" id="ninja_forms_field_<?php echo $field_id;?>" class="ninja-forms-field" rel="<?php echo $field_id;?>">
+        <option value="">Please Select</option>
+    <?php
+                    $appointment_args = array(
+                      'form_id'   => 13
+                    );
+                    $appointment_subs = Ninja_Forms()->subs()->get( $appointment_args );
+
+                       
+                      foreach ( $appointment_subs as $appointment_sub ) {
+                        $appointment_value=$appointment_sub->get_field($appointment_field_id);
+
+ 
+                           // echo "</select>".$appointment_value."<br>";
+
+                        if(empty($appointment_value)){
+                            continue;
+                        }
+                        $student_email=$appointment_sub->get_field(78);
+                        
+                        $student_args = array(
+                          'form_id'   => 6,
+                          'fields'    => array(
+                            '15'      => $student_email,
+                           ),    
+                        );
+                        $student_subs = Ninja_Forms()->subs()->get( $student_args );
+                        if(count($student_subs)<=0){
+                            continue;
+                        }
+                        $student_sub=$student_subs[0];
+                        $student_name=$student_sub->get_field(7);
+                        $student_school=$student_sub->get_field(49);
+                        $student_degree=$student_sub->get_field(50);
+                        $student_gender=$student_sub->get_field(21);
+
+                        $provider_args = array(
+                            'form_id'   => 9
+                        );
+                        $provider_subs = Ninja_Forms()->subs()->get( $provider_args );
+
+                        $assignment_args = array(
+                          'form_id'   => $form_id
+                        );
+                        $assignment_subs = Ninja_Forms()->subs()->get( $assignment_args );
+                        $flag_assigned=false;
+                        foreach ($assignment_subs as $assignment_sub) {
+                            $assignment_sub_value=$assignment_sub->get_field($assignment_field_id);
+                            if(!empty($assignment_sub_value)){
+                                $assignment_sub_array=explode(" - ", $assignment_sub_value);
+                                if($assignment_sub_array[1]==$student_email){
+                                    
+                                    if($appointment_field_id==75){
+                                        $key =  array_search($assignment_sub_array[4], $appointment_value); 
+                                        
+                                        if ($key !== false) {
+                                            unset($appointment_value[$key]);
+                                        }
+                                    }else{
+
+                                        if($assignment_sub_array[4]==$appointment_value){
+                                            $flag_assigned=true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                        }
+
+                        if($appointment_field_id==75){
+                            if(count($appointment_value)==0){
+                                continue;
+                            }
+                        }else{
+                            if($flag_assigned){
+                                continue;
+                            }
+                        }
+                        
+                        $non_drivers=array();
+                        $non_coworkers=array();
+                        foreach ( $provider_subs as $provider_sub ) {
+                            $provider_name=$provider_sub->get_field(39);
+                            //echo "</select>".$provider_name."<br>";
+                            $provider_group=$provider_sub->get_field(41);
+                            //echo "</select>".$provider_group."<br>";
+                            $provider_email=$provider_sub->get_field(55);
+                            //echo "</select>".$provider_email."<br>";
+                            $provider_gender=$provider_sub->get_field(79);
+                            //echo "</select>".$provider_gender."<br>";
+                            if($provider_gender!="Male or Female"&&$provider_gender!=$student_gender){
+                                continue;
+                            }
+
+                            $provider_school=$provider_sub->get_field(66);
+                            //echo "</select>".$provider_school."<br>";
+                            if($provider_school!="All Schools"&&$provider_school!=$student_school){
+                                continue;
+                            }
+
+                            $provider_degree=$provider_sub->get_field(67);
+                            //echo "</select>".$provider_degree."<br>";
+                            if($provider_degree!="All Degree"
+                                &&!($provider_degree=="硕士或博士"&&($student_degree=="硕士"||$student_degree=="博士"))
+                                &&$provider_degree!=$student_degree){
+                                continue;
+                            }
+
+                            
+                            $provider_can_drive=$provider_sub->get_field(68);
+                            //echo "</select>".$provider_can_drive."<br>";
+                            $provider_is_coworker=$provider_sub->get_field(69);
+                            //echo "</select>".$provider_is_coworker."<br>";
+                            if($provider_can_drive=="NO"&&$provider_is_coworker=="YES"){
+                                array_push($non_drivers, $provider_sub);
+                            }
+                            if($provider_is_coworker=="NO"&&$provider_can_drive=="YES"){
+                                array_push($non_coworkers, $provider_sub);
+                            }
+
+
+                            $provider_value=$provider_sub->get_field($provider_field_id);
+                            // echo "</select>".$provider_value."<br>";
+
+                            $assignment_args = array(
+                              'form_id'   => $form_id
+                            );
+                            $assignment_subs = Ninja_Forms()->subs()->get( $assignment_args );
+                            $flag_assigned=false;
+                            foreach ($assignment_subs as $assignment_sub) {
+                                $assignment_sub_value=$assignment_sub->get_field($assignment_field_id);
+                                if(!empty($assignment_sub_value)){
+                                     $assignment_sub_array=explode(" - ", $assignment_sub_value);
+                                     $pos=strpos($assignment_sub_array[3], $provider_email);
+                                    if($pos){
+                                        $key =  array_search($assignment_sub_array[4], $provider_value); 
+                                        if ($key !== false) {
+                                            unset($provider_value[$key]);
+                                        }
+                                    }
+                                }
+                            }
+                            if(empty($provider_value)||count($provider_value)==0){
+
+                                continue;
+                            }
+                           
+                           
+                            if($appointment_field_id==75){
+                                foreach ($appointment_value as$appointment_hosting_day) {
+                                    if(in_array($appointment_hosting_day, $provider_value)){
+                                        
+                                    ?>
+                                        <option value="<?php echo $student_name.' - '.$student_email.' - '.$provider_name.' - '.$provider_email.' - '.$appointment_hosting_day;?>"><?php echo $student_name." - ".$provider_name." - ".$appointment_hosting_day;?></option>
+
+                                    <?php
+                                    }
+                                }
+                            }else{
+                                if(in_array($appointment_value, $provider_value)){
+                                    if($provider_is_coworker=="NO"&&$provider_can_drive=="YES"){
+                                        foreach ($non_drivers as $non_driver) {
+                                            $non_driver_value=$non_driver->get_field($provider_field_id);
+                                            $non_driver_email=$non_driver->get_field(55);
+                                            $non_driver_name=$non_driver->get_field(39);
+                                            if(in_array($appointment_value, $non_driver_value)){
+                                                $key =  array_search($non_driver, $non_drivers); 
+                                                if ($key !== false) {
+                                                    unset($non_drivers[$key]);
+                                                }
+                                                $key =  array_search($provider_sub, $non_coworkers); 
+                                                if ($key !== false) {
+                                                    unset($non_coworkers[$key]);
+                                                }
+                                               ?>
+                                                    <option value="<?php echo $student_name.' - '.$student_email.' - '.$provider_name.';'.$non_driver_name.' - '.$provider_email.';'.$non_driver_email.' - '.$appointment_value;?>"><?php echo $student_name." - ".$provider_name.";".$non_driver_name." - ".$appointment_value;?></option>
+
+                                                <?php 
+                                            }
+                                        }
+                                    }elseif($provider_is_coworker=="YES"&&$provider_can_drive=="NO"){
+                                        foreach ($non_coworkers as $non_coworker) {
+                                            $non_coworker_value=$non_coworker->get_field($provider_field_id);
+                                            $non_coworker_email=$non_coworker->get_field(55);
+                                            $non_coworker_name=$non_coworker->get_field(39);
+                                            if(in_array($appointment_value, $non_coworker_value)){
+                                                $key =  array_search($non_coworker, $non_coworkers); 
+                                                if ($key !== false) {
+                                                    unset($non_coworkers[$key]);
+                                                }
+                                                $key =  array_search($provider_sub, $non_drivers); 
+                                                if ($key !== false) {
+                                                    unset($non_drivers[$key]);
+                                                }
+                                               ?>
+                                                    <option value="<?php echo $student_name.' - '.$student_email.' - '.$provider_name.';'.$non_coworker_name.' - '.$provider_email.';'.$non_coworker_email.' - '.$appointment_value;?>"><?php echo $student_name." - ".$provider_name.";".$non_coworker_name." - ".$appointment_value;?></option>
+
+                                                <?php 
+                                            }
+                                        }
+                                    }elseif($provider_can_drive=="YES"&&$provider_is_coworker=="YES"){
+                                        ?>
+                                            <option value="<?php echo $student_name.' - '.$student_email.' - '.$provider_name.' - '.$provider_email.' - '.$appointment_value;?>"><?php echo $student_name." - ".$provider_name." - ".$appointment_value;?></option>
+
+                                        <?php
+                                    }
+                                }
+                            }
+                            
+                        }
+                        
+                    }
+    ?>
+        </select>
+    <?php
+
+                        
+   
+
 }
 
 // To give Editors access to the ALL Forms menu
