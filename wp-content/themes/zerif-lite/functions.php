@@ -458,6 +458,7 @@ function my_new_field_display( $field_id, $data, $form_id  ){
             // echo 'customer_school:'.$customer_school;
             $customer_degree = $value->get_field(50);
             // echo 'customer_degree:'.$customer_degree;
+            $customer_gender=$value->get_field(21);
             }
             
         }else{
@@ -483,28 +484,37 @@ function my_new_field_display( $field_id, $data, $form_id  ){
             // echo 'provider_school:'.$provider_school;
             $provider_degree=$sub->get_field( 67 );
             // echo 'provider_degree:'.$provider_degree;
+            $provider_gender=$sub->get_field(79);
             $provider_can_drive=$sub->get_field(68)=='YES';
             // echo 'provider_can_drive:'.$provider_can_drive;
             $provider_is_coworker=$sub->get_field(69)=='YES';
             // echo 'provider_is_coworker:'.$provider_is_coworker;
         }
+        //echo $provider_degree;
+        //echo $customer_degree;
+        //echo ($provider_school!=null&&$provider_school!='All Schools'&&!(($customer_degree=="硕士"||$customer_degree=="博士")&&$provider_degree=="硕士或博士"))?"true":"false";
         if($provider_school!=null&&$provider_school!='All Schools'){
             if($customer_school==null||$customer_school!=$provider_school){
                 continue;
             }
         }
-         // echo 'school ok';
-        if($provider_degree!=null&&$provider_degree!='All Degree'){
+         //echo 'school ok';
+        if($provider_degree!=null&&$provider_degree!='All Degree'&&!(($customer_degree=="硕士"||$customer_degree=="博士")&&$provider_degree=="硕士或博士")){
             if($customer_degree==null||$customer_degree!=$provider_degree){
                 continue;
             }
         }
-        // echo 'degree ok';
+         //echo 'degree ok';
+        if($provider_gender!=null&&$provider_gender!="Male or Female"){
+            if($customer_gender==null||$customer_gender!=$provider_gender){
+                continue;
+            }
+        }
         $provider_field_subs=$sub->get_field( $provider_field_id );
         if($provider_field_subs!=null){
-            // echo 'sub ok';
+             //echo 'sub ok';
         if(!$provider_can_drive&&$field_id!=75){
-             // echo 'drive not ok';
+              //echo 'drive not ok';
           foreach ($provider_field_subs as $provider_field_sub_value) {
         //echo($provider_field_sub_value);
             array_push($non_drivers,$provider_field_sub_value);
@@ -517,7 +527,7 @@ function my_new_field_display( $field_id, $data, $form_id  ){
             array_push($non_coworders,$provider_field_sub_value);
             }
         }else{
-             // echo 'all ok';
+            //  echo 'all ok';
              foreach ($provider_field_subs as $provider_field_sub_value) {
                     //echo($provider_field_sub_value);
                 array_push($results,$provider_field_sub_value);
@@ -741,6 +751,9 @@ function date_list_field_display( $field_id, $data, $form_id  ){
     if($data['req']==1)$required='required';else $required='';
 
     $startDate = new DateTime($data['date_from']);
+    date_default_timezone_set('America/New_York');
+$date = date('m/d/Y h:i:s a', time());
+$startDate= $startDate<$date?$date:$startDate;
     $endDate = new DateTime($data['date_to']);
     if( isset( $data['default_value'] ) AND !empty( $data['default_value'] ) ){
         $selected_value = $data['default_value'];
@@ -758,76 +771,149 @@ function date_list_field_display( $field_id, $data, $form_id  ){
             do {
                 $value=$startDate->format("m/d");
                 if($field_id==60){
-                    $value1=$value.' Morning';
-                    $value2=$value.' Afternoon';
-                    $value3=$value.' Night';
-                     if( is_array( $selected_value ) AND in_array($value1, $selected_value) ){
+                    $value_list=array($value.' Morning',$value.' Afternoon',$value.' Night' );
+                    foreach ($value_list as $each_value) {
+                        if( is_array( $selected_value ) AND in_array($each_value, $selected_value) ){
 
-                    $checked = 'checked';
-                }else if($selected_value == $value1){
-                    $checked = 'checked';
+                            $checked = 'checked';
+                        }else if($selected_value == $each_value){
+                            $checked = 'checked';
+                        }else{
+                            $checked = '';
+                        }
+                        $args = array(
+                          'form_id'   => 13,
+                          'fields'    => array(
+                            '72'      => $each_value,
+                            ),
+                          );
+                        $cust_subs = Ninja_Forms()->subs()->get( $args );
+                        $args = array(
+                          'form_id'   => 9
+                        );
+                        $provider_subs = Ninja_Forms()->subs()->get( $args );
+                        $provider_subs_count=0;
+                        foreach ($provider_subs as $sub) {
+                            $field_value=$sub->get_field(60);
+                            if($field_value!=null){
+                                if(in_array($each_value,$field_value))$provider_subs_count++;
+                            }
+                        }
+                        
+                        if($cust_subs!=null&&$cust_subs[0]->get_field(72)!='') {
+                            $fulfilled=$provider_subs_count>count($cust_subs)?'fulfilled':'needed';
+                        }else{
+                            $fulfilled=$provider_subs_count>0?'fulfilled':'needed';
+                        }
+           //echo $startDate->format("m/d") , PHP_EOL;
+                        ?><li>
+                            <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options <?php echo $fulfilled;?> " style="<?php echo $display_style;?>">
+                                <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $each_value;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
+                                <?php echo $each_value;?>
+                            </label>
+                        </li>
+                        <?php
+                    }
+                     
                 }else{
-                    $checked = '';
+
+                    if( is_array( $selected_value ) AND in_array($value, $selected_value) ){
+
+                        $checked = 'checked';
+                    }else if($selected_value == $value){
+                        $checked = 'checked';
+                    }else{
+                        $checked = '';
+                    }
+                    if($field_id==58){
+                        $args = array(
+                          'form_id'   => 13,
+                          'fields'    => array(
+                            '73'      => $value,
+                            ),
+                          );
+                        $cust_subs = Ninja_Forms()->subs()->get( $args );
+                        $args = array(
+                          'form_id'   => 9
+                        );
+                        $provider_subs = Ninja_Forms()->subs()->get( $args );
+                        $provider_subs_count=0;
+                        foreach ($provider_subs as $sub) {
+                            $field_value=$sub->get_field(58);
+                            if($field_value!=null){
+                                //echo $value.'=='.$field_value.'<br>';
+                                if(in_array($value,$field_value))$provider_subs_count++;
+                            }
+                        }
+                       
+                        if($cust_subs!=null&&$cust_subs[0]->get_field(73)!='') {
+                            $fulfilled=$provider_subs_count>count($cust_subs)?'fulfilled':'needed';
+                        }else{
+                            $fulfilled=$provider_subs_count>0?'fulfilled':'needed';
+                        }
+                    }elseif($field_id==59){
+                        $args = array(
+                          'form_id'   => 13,
+                          'fields'    => array(
+                            '74'      => $value,
+                            ),
+                          );
+                        $cust_subs = Ninja_Forms()->subs()->get( $args );
+                        $args = array(
+                          'form_id'   => 9
+                        );
+                        $provider_subs = Ninja_Forms()->subs()->get( $args );
+                        $provider_subs_count=0;
+                        foreach ($provider_subs as $sub) {
+                            $field_value=$sub->get_field(59);
+                            if($field_value!=null){
+                                if(in_array($value,$field_value))$provider_subs_count++;
+                            }
+                        }
+                        
+                        if($cust_subs!=null&&$cust_subs[0]->get_field(74)!='') {
+                            $fulfilled=$provider_subs_count>count($cust_subs)?'fulfilled':'needed';
+                        }else{
+                            $fulfilled=$provider_subs_count>0?'fulfilled':'needed';
+                        }
+                    }elseif($field_id==61){
+                        $args = array(
+                          'form_id'   => 13
+                          );
+                        $cust_subs = Ninja_Forms()->subs()->get( $args );
+                        $cust_subs_count=0;
+                        foreach ($cust_subs as $sub) {
+                            $field_value=$sub->get_field(75);
+                            if($field_value!=null){
+                                if(in_array($value,$field_value))$cust_subs_count++;
+                            }
+                        }
+                        $args = array(
+                          'form_id'   => 9
+                        );
+                        $provider_subs = Ninja_Forms()->subs()->get( $args );
+                        $provider_subs_count=0;
+                        foreach ($provider_subs as $sub) {
+                            $field_value=$sub->get_field(61);
+                            if($field_value!=null){
+                                if(in_array($value,$field_value))$provider_subs_count++;
+                            }
+                        }
+                        
+                        $fulfilled=$provider_subs_count>$cust_subs_count?'fulfilled':'needed';
+                    }else{
+                        $fulfilled='';
+                    }
+
+       //echo $startDate->format("m/d") , PHP_EOL;
+                    ?><li>
+                    <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options <?php echo $fulfilled;?>" style="<?php echo $display_style;?>">
+                        <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
+                        <?php echo $value;?>
+                    </label>
+                    </li>
+                <?php
                 }
-   //echo $startDate->format("m/d") , PHP_EOL;
-                ?><li>
-                <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options" style="<?php echo $display_style;?>">
-                    <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value1;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
-                    <?php echo $value1;?>
-                </label>
-            </li>
-            <?php
-             if( is_array( $selected_value ) AND in_array($value2, $selected_value) ){
-
-                    $checked = 'checked';
-                }else if($selected_value == $value2){
-                    $checked = 'checked';
-                }else{
-                    $checked = '';
-                }
-   //echo $startDate->format("m/d") , PHP_EOL;
-                ?><li>
-                <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options" style="<?php echo $display_style;?>">
-                    <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value2;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
-                    <?php echo $value2;?>
-                </label>
-            </li>
-            <?php
-             if( is_array( $selected_value ) AND in_array($value3, $selected_value) ){
-
-                    $checked = 'checked';
-                }else if($selected_value == $value3){
-                    $checked = 'checked';
-                }else{
-                    $checked = '';
-                }
-   //echo $startDate->format("m/d") , PHP_EOL;
-                ?><li>
-                <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options" style="<?php echo $display_style;?>">
-                    <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value3;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
-                    <?php echo $value3;?>
-                </label>
-            </li>
-            <?php
-                }else{
-
-                if( is_array( $selected_value ) AND in_array($value, $selected_value) ){
-
-                    $checked = 'checked';
-                }else if($selected_value == $value){
-                    $checked = 'checked';
-                }else{
-                    $checked = '';
-                }
-   //echo $startDate->format("m/d") , PHP_EOL;
-                ?><li>
-                <label id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>_label" class="ninja-forms-field-<?php echo $field_id;?>-options" style="<?php echo $display_style;?>">
-                    <input id="ninja_forms_field_<?php echo $field_id;?>_<?php echo $x;?>" name="ninja_forms_field_<?php echo $field_id;?>[]" type="checkbox" class="<?php echo $field_class;?> ninja_forms_field_<?php echo $field_id;?>" value="<?php echo $value;?>" <?php echo $checked;?> rel="<?php echo $field_id;?>"/>
-                    <?php echo $value;?>
-                </label>
-            </li>
-            <?php
-            }
             $x++;
             $startDate->modify("+1 day");
         } while ($startDate <= $endDate);
@@ -850,7 +936,35 @@ function date_list_field_display( $field_id, $data, $form_id  ){
 
 
 }
+function ninja_forms_register_setcookie(){
+  add_action( 'ninja_forms_process', 'ninja_forms_setcookie' );
+}
+add_action( 'init', 'ninja_forms_register_setcookie' );
 
+function ninja_forms_setcookie(){
+  global $ninja_forms_processing;
+  $form_id=$ninja_forms_processing->get_form_ID();
+  if($form_id==6){
+    $user_value = $ninja_forms_processing->get_field_value( 15 );
+    setcookie(
+      "nswm_user_email",
+      $user_value,
+      time() + (10 * 365 * 24 * 60 * 60),
+      //0,
+      "/"
+      );
+    }
+    elseif($form_id==9){
+        $user_value = $ninja_forms_processing->get_field_value( 55 );
+    setcookie(
+      "nswm_user_email",
+      $user_value,
+      time() + (10 * 365 * 24 * 60 * 60),
+      //0,
+      "/"
+      );
+    }
+}
 function ninja_forms_register_delete_existing(){
   add_action( 'ninja_forms_process', 'ninja_forms_delete_existing' );
 }
@@ -859,9 +973,10 @@ add_action( 'init', 'ninja_forms_register_delete_existing' );
 function ninja_forms_delete_existing(){
   global $ninja_forms_processing;
   $form_id=$ninja_forms_processing->get_form_ID();
-  if(isset($_COOKIE["nswm_user_email"])) {
-    $user_email=$_COOKIE["nswm_user_email"];
+  // if(isset($_COOKIE["nswm_user_email"])) {
+  //   $user_email=$_COOKIE["nswm_user_email"];
     if($form_id==13){
+  $user_email = $ninja_forms_processing->get_field_value( 78 );
             //echo $user_email;
         $args = array(
           'form_id'   => $form_id,
@@ -876,6 +991,7 @@ function ninja_forms_delete_existing(){
         }
       }
       elseif($form_id==9){
+  $user_email = $ninja_forms_processing->get_field_value( 55 );
                 //echo $user_email;
             $args = array(
               'form_id'   => $form_id,
@@ -890,6 +1006,7 @@ function ninja_forms_delete_existing(){
             }
         }
         elseif ($form_id==6) {
+  $user_email = $ninja_forms_processing->get_field_value( 15 );
                 //echo $user_email;
             $args = array(
               'form_id'   => $form_id,
@@ -903,38 +1020,10 @@ function ninja_forms_delete_existing(){
               $sub->delete();
           }
         }
-    }
+    
 }
 
-function ninja_forms_register_setcookie(){
-  add_action( 'ninja_forms_post_process', 'ninja_forms_setcookie' );
-}
-add_action( 'init', 'ninja_forms_register_setcookie' );
 
-function ninja_forms_setcookie(){
-  global $ninja_forms_processing;
-  $form_id=$ninja_forms_processing->get_form_ID();
-  if($form_id==6){
-    $user_value = $ninja_forms_processing->get_field_value( 15 );
-    setcookie(
-      "nswm_user_email",
-      $user_value,
-      //time() + (10 * 365 * 24 * 60 * 60),
-      0,
-      "/"
-      );
-    }
-    elseif($form_id==9){
-        $user_value = $ninja_forms_processing->get_field_value( 55 );
-    setcookie(
-      "nswm_user_email",
-      $user_value,
-      //time() + (10 * 365 * 24 * 60 * 60),
-      0,
-      "/"
-      );
-    }
-}
 
 function ninja_register_forms_getvalues(){
   add_action( 'ninja_forms_display_pre_init', 'ninja_forms_getvalues' );
@@ -1092,6 +1181,7 @@ function ninja_forms_getvalues(){
                $ninja_forms_loading->update_field_settings(74, 'field_class','hide') ;
                 $ninja_forms_loading->update_field_settings(75, 'field_class','hide') ;
              $ninja_forms_loading->update_field_settings(76, 'field_class','hide') ;
+             //if( function_exists( 'ninja_forms_display_form' ) ){ ninja_forms_display_form( 6 ); }
         }
     }
 }

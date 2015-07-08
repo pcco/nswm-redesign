@@ -4903,3 +4903,10 @@ body.custom-background {
 .home-btn{
 	padding: 30px 80px;
 }
+.needed::after { 
+	color:#e96656;
+    content: " [Need]";
+}
+.fulfilled{
+
+}
