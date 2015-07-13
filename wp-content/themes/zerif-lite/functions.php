@@ -1373,7 +1373,7 @@ function waiting_student_list_field_display( $field_id, $data, $form_id  ){
                                 if(!empty($assignment_sub_value)){
                                      $assignment_sub_array=explode(" - ", $assignment_sub_value);
                                      $pos=strpos($assignment_sub_array[3], $provider_email);
-                                    if($pos){
+                                    if($pos||$assignment_sub_array[3]==$provider_email){
                                         $key =  array_search($assignment_sub_array[4], $provider_value); 
                                         if ($key !== false) {
                                             unset($provider_value[$key]);
